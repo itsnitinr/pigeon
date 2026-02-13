@@ -49,10 +49,37 @@ export const createUserTokenInputSchema = z.object({
   ttlSeconds: z.number().int().positive().max(60 * 60 * 24).default(DEFAULT_USER_TOKEN_TTL_SECONDS)
 })
 
+const unreadQuerySchema = z
+  .union([z.boolean(), z.string()])
+  .transform((value, ctx) => {
+    if (typeof value === 'boolean') {
+      return value
+    }
+
+    const normalized = value.trim().toLowerCase()
+
+    if (normalized === 'true' || normalized === '1') {
+      return true
+    }
+
+    if (normalized === 'false' || normalized === '0') {
+      return false
+    }
+
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "unread must be one of: 'true', 'false', '1', '0'"
+    })
+
+    return z.NEVER
+  })
+  .optional()
+  .default(false)
+
 export const notificationsListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(MAX_NOTIFICATIONS_PAGE_SIZE).default(DEFAULT_NOTIFICATIONS_PAGE_SIZE),
   cursor: uuidSchema.optional(),
-  unread: z.coerce.boolean().optional().default(false)
+  unread: unreadQuerySchema
 })
 
 export const notificationPathParamSchema = z.object({

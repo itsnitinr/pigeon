@@ -1,17 +1,13 @@
+import { environments } from '@pigeon/db'
+import { eq } from 'drizzle-orm'
 import { createMiddleware } from 'hono/factory'
 
 import { jwtPayloadSchema } from '@pigeon/shared'
 import { extractBearerToken } from '../lib/auth'
-import { pool } from '../lib/db'
+import { db } from '../lib/db'
 import { ApiError } from '../lib/errors'
 import { decodeJwtPayloadUnsafe, verifyHs256Jwt } from '../lib/jwt'
 import type { AppBindings } from '../types/context'
-
-type EnvironmentSecretRow = {
-  id: string
-  project_id: string
-  jwt_secret: string
-}
 
 export const jwtAuthMiddleware = createMiddleware<AppBindings>(async (c, next) => {
   const token = extractBearerToken(c.req.header('authorization'))
@@ -25,27 +21,25 @@ export const jwtAuthMiddleware = createMiddleware<AppBindings>(async (c, next) =
 
   const payload = parsedUnverifiedPayload.data
 
-  const { rows } = await pool.query<EnvironmentSecretRow>(
-    `
-      SELECT id, project_id, jwt_secret
-      FROM environments
-      WHERE id = $1
-      LIMIT 1
-    `,
-    [payload.eid]
-  )
-
-  const environment = rows[0]
+  const [environment] = await db
+    .select({
+      id: environments.id,
+      projectId: environments.projectId,
+      jwtSecret: environments.jwtSecret
+    })
+    .from(environments)
+    .where(eq(environments.id, payload.eid))
+    .limit(1)
 
   if (!environment) {
     throw new ApiError(401, 'UNAUTHORIZED', 'Unknown JWT environment')
   }
 
-  if (environment.project_id !== payload.pid) {
+  if (environment.projectId !== payload.pid) {
     throw new ApiError(401, 'UNAUTHORIZED', 'JWT project mismatch')
   }
 
-  const verifiedPayload = verifyHs256Jwt(token, environment.jwt_secret)
+  const verifiedPayload = verifyHs256Jwt(token, environment.jwtSecret)
   const parsedVerifiedPayload = jwtPayloadSchema.safeParse(verifiedPayload)
 
   if (!parsedVerifiedPayload.success) {

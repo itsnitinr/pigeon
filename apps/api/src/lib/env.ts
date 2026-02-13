@@ -48,11 +48,7 @@ function loadEnvFile(filePath: string, override = false): void {
 }
 
 const currentDir = dirname(fileURLToPath(import.meta.url))
-const rootCandidates = [
-  resolve(currentDir, '../../../../'),
-  resolve(currentDir, '../../../'),
-  process.cwd()
-]
+const rootCandidates = [resolve(currentDir, '../../../../'), resolve(currentDir, '../../../'), process.cwd()]
 
 for (const rootPath of rootCandidates) {
   loadEnvFile(resolve(rootPath, '.env'))
@@ -62,7 +58,9 @@ for (const rootPath of rootCandidates) {
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   API_PORT: z.coerce.number().int().positive().default(3001),
-  DATABASE_URL: z.string().min(1)
+  DATABASE_URL: z.string().min(1),
+  REDIS_URL: z.string().min(1).default('redis://localhost:6379'),
+  JWT_TTL_SECONDS: z.coerce.number().int().positive().default(3600)
 })
 
 export const env = envSchema.parse(process.env)

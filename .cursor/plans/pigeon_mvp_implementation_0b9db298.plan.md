@@ -13,7 +13,7 @@ todos:
     status: completed
   - id: phase-4-api-endpoints
     content: 'Phase 4 - API Server (Endpoints): Implement POST /v1/notifications (validate, idempotency check, upsert end_user, write notification, enqueue job), POST /v1/users/:userId/token (mint JWT), GET /v1/notifications (cursor-paginated list), POST /v1/notifications/:id/read, POST /v1/notifications/read-all, POST /v1/notifications/:id/archive.'
-    status: pending
+    status: completed
   - id: phase-5-api-sse
     content: 'Phase 5 - API Server (SSE): Implement GET /v1/stream endpoint using Hono streaming. Subscribe to Redis pub/sub channel per connected user. Handle reconnection with Last-Event-ID. Implement rate limiting middleware (Redis sliding window).'
     status: pending

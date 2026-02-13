@@ -15,6 +15,8 @@
     "@hono/zod-validator": "^0.4.1",
     "@pigeon/db": "workspace:*",
     "@pigeon/shared": "workspace:*",
+    "bullmq": "^5.40.3",
+    "drizzle-orm": "^0.36.4",
     "hono": "^4.6.12",
     "zod": "^3.24.1"
   },

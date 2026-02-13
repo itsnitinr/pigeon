@@ -8,7 +8,8 @@
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "format": "biome format --write .",
-    "check": "biome check ."
+    "check": "biome check .",
+    "test:phase4": "node packages/db/scripts/phase4-smoke-test.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

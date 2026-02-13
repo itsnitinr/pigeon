@@ -70,3 +70,13 @@ export function verifyHs256Jwt(token: string, secret: string): unknown {
     throw new ApiError(401, 'UNAUTHORIZED', 'Invalid verified JWT payload')
   }
 }
+
+export function signHs256Jwt(payload: Record<string, unknown>, secret: string): string {
+  const headerSegment = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url')
+  const payloadSegment = Buffer.from(JSON.stringify(payload)).toString('base64url')
+  const signatureSegment = createHmac('sha256', secret)
+    .update(`${headerSegment}.${payloadSegment}`)
+    .digest('base64url')
+
+  return `${headerSegment}.${payloadSegment}.${signatureSegment}`
+}
