@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: phase-5-api-sse
     content: 'Phase 5 - API Server (SSE): Implement GET /v1/stream endpoint using Hono streaming. Subscribe to Redis pub/sub channel per connected user. Handle reconnection with Last-Event-ID. Implement rate limiting middleware (Redis sliding window).'
-    status: pending
+    status: completed
   - id: phase-6-worker
     content: 'Phase 6 - Worker: Scaffold BullMQ worker process. Implement notification delivery processor (update status to delivered, publish to Redis pub/sub for SSE). Implement webhook delivery processor (HMAC-SHA256 signing, HTTP delivery, retry with exponential backoff, log attempts). Implement template rendering ({{variable}} interpolation). Add recurring cleanup job to hard-delete notifications older than 90 days (BullMQ repeatable job, daily).'
     status: pending

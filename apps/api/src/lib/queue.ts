@@ -6,18 +6,23 @@ const globalQueueState = globalThis as typeof globalThis & {
   __pigeonApiQueue?: Queue
 }
 
+const redisUrl = new URL(env.REDIS_URL)
+const redisDbPath = redisUrl.pathname.replace('/', '')
+
+const queueConnectionOptions = {
+  host: redisUrl.hostname,
+  port: Number(redisUrl.port || 6379),
+  db: redisDbPath ? Number(redisDbPath) || 0 : 0,
+  maxRetriesPerRequest: null,
+  enableReadyCheck: false,
+  ...(redisUrl.username ? { username: redisUrl.username } : {}),
+  ...(redisUrl.password ? { password: redisUrl.password } : {})
+}
+
 const notificationQueue =
   globalQueueState.__pigeonApiQueue ??
   new Queue('notification-delivery', {
-    connection: {
-      maxRetriesPerRequest: null,
-      enableReadyCheck: false,
-      host: new URL(env.REDIS_URL).hostname,
-      port: Number(new URL(env.REDIS_URL).port || 6379),
-      username: new URL(env.REDIS_URL).username || undefined,
-      password: new URL(env.REDIS_URL).password || undefined,
-      db: new URL(env.REDIS_URL).pathname ? Number(new URL(env.REDIS_URL).pathname.replace('/', '')) || 0 : 0
-    }
+    connection: queueConnectionOptions
   })
 
 if (env.NODE_ENV !== 'production') {

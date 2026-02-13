@@ -1,6 +1,7 @@
 import { endUsers, environments, notifications } from '@pigeon/db'
 import { and, desc, eq, isNull, lt, or } from 'drizzle-orm'
 import { Hono } from 'hono'
+import { streamSSE } from 'hono/streaming'
 import {
   createUserTokenResponseSchema,
   notificationPathParamSchema,
@@ -16,15 +17,24 @@ import type {
   JsonValue,
   MarkAllReadResponse,
   MarkReadResponse,
-  NotificationsListResponse
+  NotificationsListResponse,
+  StreamEvent
 } from '@pigeon/shared'
 import { db } from '../lib/db'
 import { env } from '../lib/env'
 import { ApiError } from '../lib/errors'
 import { signHs256Jwt } from '../lib/jwt'
+import {
+  getUserEventChannel,
+  parsePublishedRealtimeEvent,
+  publishUserEvent,
+  readUserEventsSince
+} from '../lib/realtime'
+import { createRedisSubscriber } from '../lib/redis'
 import { enqueueNotificationDelivery } from '../lib/queue'
 import { apiKeyAuthMiddleware } from '../middleware/api-key-auth'
 import { jwtAuthMiddleware } from '../middleware/jwt-auth'
+import { createRateLimitMiddleware } from '../middleware/rate-limit'
 import type { AppBindings } from '../types/context'
 
 function toJsonRecord(value: unknown): Record<string, JsonValue> {
@@ -57,9 +67,37 @@ async function getEndUserId(environmentId: string, externalUserId: string): Prom
   return endUser?.id ?? null
 }
 
+const apiWriteRateLimitMiddleware = createRateLimitMiddleware({
+  keyPrefix: 'ratelimit:api-key:write',
+  limit: 100,
+  windowMs: 1000,
+  resolveIdentifier: (c) => c.get('apiKeyAuth').apiKeyId
+})
+
+const jwtReadRateLimitMiddleware = createRateLimitMiddleware({
+  keyPrefix: 'ratelimit:jwt:read',
+  limit: 1000,
+  windowMs: 1000,
+  resolveIdentifier: (c) => {
+    const auth = c.get('jwtAuth')
+    return `${auth.environmentId}:${auth.externalUserId}`
+  }
+})
+
+async function writeStreamEvent(
+  writeSSE: (message: { id?: string; event?: string; data: string; retry?: number }) => Promise<void>,
+  event: { id: string; event: StreamEvent['event']; data: StreamEvent['data'] }
+): Promise<void> {
+  await writeSSE({
+    id: event.id,
+    event: event.event,
+    data: JSON.stringify(event.data)
+  })
+}
+
 export const v1Routes = new Hono<AppBindings>()
 
-v1Routes.post('/notifications', apiKeyAuthMiddleware, async (c) => {
+v1Routes.post('/notifications', apiKeyAuthMiddleware, apiWriteRateLimitMiddleware, async (c) => {
   const auth = c.get('apiKeyAuth')
   const rawBody = parseJson(await c.req.text())
   const parsedBody = sendNotificationInputSchema.safeParse(rawBody)
@@ -210,7 +248,7 @@ v1Routes.post('/notifications', apiKeyAuthMiddleware, async (c) => {
   )
 })
 
-v1Routes.post('/users/:userId/token', apiKeyAuthMiddleware, async (c) => {
+v1Routes.post('/users/:userId/token', apiKeyAuthMiddleware, apiWriteRateLimitMiddleware, async (c) => {
   const auth = c.get('apiKeyAuth')
 
   const pathParamsResult = userPathParamSchema.safeParse(c.req.param())
@@ -269,7 +307,7 @@ v1Routes.post('/users/:userId/token', apiKeyAuthMiddleware, async (c) => {
   return c.json(responseCheck.data, 201)
 })
 
-v1Routes.get('/notifications', jwtAuthMiddleware, async (c) => {
+v1Routes.get('/notifications', jwtAuthMiddleware, jwtReadRateLimitMiddleware, async (c) => {
   const auth = c.get('jwtAuth')
 
   const queryResult = notificationsListQuerySchema.safeParse({
@@ -368,7 +406,7 @@ v1Routes.get('/notifications', jwtAuthMiddleware, async (c) => {
   return c.json(response)
 })
 
-v1Routes.post('/notifications/:id/read', jwtAuthMiddleware, async (c) => {
+v1Routes.post('/notifications/:id/read', jwtAuthMiddleware, jwtReadRateLimitMiddleware, async (c) => {
   const auth = c.get('jwtAuth')
   const pathParamsResult = notificationPathParamSchema.safeParse(c.req.param())
 
@@ -401,48 +439,47 @@ v1Routes.post('/notifications/:id/read', jwtAuthMiddleware, async (c) => {
     throw new ApiError(404, 'NOT_FOUND', 'Notification not found')
   }
 
-  if (existing.readAt) {
-    const response: MarkReadResponse = {
-      id: existing.id,
-      readAt: existing.readAt.toISOString()
-    }
+  const readAt = existing.readAt ?? new Date()
 
-    return c.json(response)
-  }
-
-  const now = new Date()
-  const [updated] = await db
-    .update(notifications)
-    .set({
-      readAt: now,
-      updatedAt: now
-    })
-    .where(
-      and(
-        eq(notifications.id, pathParamsResult.data.id),
-        eq(notifications.environmentId, auth.environmentId),
-        eq(notifications.endUserId, endUserId),
-        isNull(notifications.readAt)
+  if (!existing.readAt) {
+    const [updated] = await db
+      .update(notifications)
+      .set({
+        readAt,
+        updatedAt: readAt
+      })
+      .where(
+        and(
+          eq(notifications.id, pathParamsResult.data.id),
+          eq(notifications.environmentId, auth.environmentId),
+          eq(notifications.endUserId, endUserId),
+          isNull(notifications.readAt)
+        )
       )
-    )
-    .returning({
-      id: notifications.id,
-      readAt: notifications.readAt
-    })
+      .returning({
+        id: notifications.id,
+        readAt: notifications.readAt
+      })
 
-  if (!updated?.readAt) {
-    throw new ApiError(500, 'INTERNAL_SERVER_ERROR', 'Failed to mark notification as read')
+    if (!updated?.readAt) {
+      throw new ApiError(500, 'INTERNAL_SERVER_ERROR', 'Failed to mark notification as read')
+    }
   }
+
+  await publishUserEvent(auth.environmentId, auth.externalUserId, 'notification.read', {
+    id: existing.id,
+    readAt: readAt.toISOString()
+  })
 
   const response: MarkReadResponse = {
-    id: updated.id,
-    readAt: updated.readAt.toISOString()
+    id: existing.id,
+    readAt: readAt.toISOString()
   }
 
   return c.json(response)
 })
 
-v1Routes.post('/notifications/read-all', jwtAuthMiddleware, async (c) => {
+v1Routes.post('/notifications/read-all', jwtAuthMiddleware, jwtReadRateLimitMiddleware, async (c) => {
   const auth = c.get('jwtAuth')
   const endUserId = await getEndUserId(auth.environmentId, auth.externalUserId)
 
@@ -471,6 +508,19 @@ v1Routes.post('/notifications/read-all', jwtAuthMiddleware, async (c) => {
     )
     .returning({ id: notifications.id })
 
+  if (updatedRows.length > 0) {
+    const readAt = now.toISOString()
+
+    await Promise.all(
+      updatedRows.map((row) =>
+        publishUserEvent(auth.environmentId, auth.externalUserId, 'notification.read', {
+          id: row.id,
+          readAt
+        })
+      )
+    )
+  }
+
   const response: MarkAllReadResponse = {
     updatedCount: updatedRows.length
   }
@@ -478,7 +528,7 @@ v1Routes.post('/notifications/read-all', jwtAuthMiddleware, async (c) => {
   return c.json(response)
 })
 
-v1Routes.post('/notifications/:id/archive', jwtAuthMiddleware, async (c) => {
+v1Routes.post('/notifications/:id/archive', jwtAuthMiddleware, jwtReadRateLimitMiddleware, async (c) => {
   const auth = c.get('jwtAuth')
   const pathParamsResult = notificationPathParamSchema.safeParse(c.req.param())
 
@@ -511,43 +561,142 @@ v1Routes.post('/notifications/:id/archive', jwtAuthMiddleware, async (c) => {
     throw new ApiError(404, 'NOT_FOUND', 'Notification not found')
   }
 
-  if (existing.archivedAt) {
-    const response: ArchiveResponse = {
-      id: existing.id,
-      archivedAt: existing.archivedAt.toISOString()
-    }
+  const archivedAt = existing.archivedAt ?? new Date()
 
-    return c.json(response)
-  }
-
-  const now = new Date()
-  const [updated] = await db
-    .update(notifications)
-    .set({
-      archivedAt: now,
-      updatedAt: now
-    })
-    .where(
-      and(
-        eq(notifications.id, pathParamsResult.data.id),
-        eq(notifications.environmentId, auth.environmentId),
-        eq(notifications.endUserId, endUserId),
-        isNull(notifications.archivedAt)
+  if (!existing.archivedAt) {
+    const [updated] = await db
+      .update(notifications)
+      .set({
+        archivedAt,
+        updatedAt: archivedAt
+      })
+      .where(
+        and(
+          eq(notifications.id, pathParamsResult.data.id),
+          eq(notifications.environmentId, auth.environmentId),
+          eq(notifications.endUserId, endUserId),
+          isNull(notifications.archivedAt)
+        )
       )
-    )
-    .returning({
-      id: notifications.id,
-      archivedAt: notifications.archivedAt
-    })
+      .returning({
+        id: notifications.id,
+        archivedAt: notifications.archivedAt
+      })
 
-  if (!updated?.archivedAt) {
-    throw new ApiError(500, 'INTERNAL_SERVER_ERROR', 'Failed to archive notification')
+    if (!updated?.archivedAt) {
+      throw new ApiError(500, 'INTERNAL_SERVER_ERROR', 'Failed to archive notification')
+    }
   }
 
   const response: ArchiveResponse = {
-    id: updated.id,
-    archivedAt: updated.archivedAt.toISOString()
+    id: existing.id,
+    archivedAt: archivedAt.toISOString()
   }
 
   return c.json(response)
+})
+
+v1Routes.get('/stream', jwtAuthMiddleware, jwtReadRateLimitMiddleware, async (c) => {
+  const auth = c.get('jwtAuth')
+  const channel = getUserEventChannel(auth.environmentId, auth.externalUserId)
+  const lastEventId = c.req.header('last-event-id') ?? c.req.query('lastEventId') ?? undefined
+
+  return streamSSE(
+    c,
+    async (stream) => {
+      const subscriber = createRedisSubscriber()
+
+      let closed = false
+      const cleanup = async () => {
+        if (closed) {
+          return
+        }
+
+        closed = true
+
+        try {
+          await subscriber.unsubscribe(channel)
+        } catch {
+          // ignore unsubscribe errors on teardown
+        }
+
+        subscriber.disconnect()
+      }
+
+      stream.onAbort(() => {
+        void cleanup()
+      })
+
+      try {
+        if (lastEventId) {
+          const replayedEvents = await readUserEventsSince(
+            auth.environmentId,
+            auth.externalUserId,
+            lastEventId,
+            200
+          )
+
+          for (const event of replayedEvents) {
+            await writeStreamEvent(stream.writeSSE.bind(stream), event)
+          }
+        }
+
+        await stream.writeSSE({
+          event: 'connected',
+          data: JSON.stringify({
+            status: 'connected',
+            timestamp: new Date().toISOString()
+          }),
+          retry: 2000
+        })
+
+        subscriber.on('message', (incomingChannel: string, payload: string) => {
+          if (incomingChannel !== channel) {
+            return
+          }
+
+          const envelope = parsePublishedRealtimeEvent(payload)
+
+          if (!envelope) {
+            return
+          }
+
+          void writeStreamEvent(stream.writeSSE.bind(stream), envelope).catch(() => {
+            stream.abort()
+          })
+        })
+
+        await subscriber.subscribe(channel)
+
+        const keepAliveInterval = setInterval(() => {
+          void stream
+            .writeSSE({
+              event: 'ping',
+              data: JSON.stringify({ timestamp: new Date().toISOString() })
+            })
+            .catch(() => {
+              stream.abort()
+            })
+        }, 25_000)
+
+        try {
+          await new Promise<void>((resolve) => {
+            stream.onAbort(() => {
+              resolve()
+            })
+          })
+        } finally {
+          clearInterval(keepAliveInterval)
+        }
+      } finally {
+        await cleanup()
+      }
+    },
+    async (_error, stream) => {
+      await stream.writeSSE({
+        event: 'error',
+        data: JSON.stringify({ message: 'SSE connection error' })
+      })
+    }
+  )
 })

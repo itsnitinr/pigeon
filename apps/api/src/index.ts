@@ -4,6 +4,7 @@ import { app } from './app'
 import { pool } from './lib/db'
 import { env } from './lib/env'
 import { closeQueueConnections } from './lib/queue'
+import { closeRedisClient } from './lib/redis'
 
 const server = serve({
   fetch: app.fetch,
@@ -24,7 +25,7 @@ const shutdown = async () => {
   console.info('Shutting down API server...')
   server.close()
 
-  await Promise.allSettled([closeQueueConnections(), pool.end()])
+  await Promise.allSettled([closeQueueConnections(), closeRedisClient(), pool.end()])
 }
 
 process.on('SIGINT', () => {
