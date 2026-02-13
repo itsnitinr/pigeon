@@ -152,6 +152,9 @@ importers:
       bullmq:
         specifier: ^5.40.3
         version: 5.69.1
+      drizzle-orm:
+        specifier: ^0.36.4
+        version: 0.36.4(@types/pg@8.16.0)(@types/react@19.2.14)(pg@8.18.0)(react@19.2.4)
       ioredis:
         specifier: ^5.4.2
         version: 5.9.3
@@ -190,6 +193,9 @@ importers:
       '@types/pg':
         specifier: ^8.11.10
         version: 8.16.0
+      bullmq:
+        specifier: ^5.40.3
+        version: 5.69.1
       drizzle-kit:
         specifier: ^0.28.0
         version: 0.28.1
