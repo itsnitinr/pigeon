@@ -1,0 +1,30 @@
+# syntax=docker/dockerfile:1.7
+
+FROM node:20-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+WORKDIR /app
+
+FROM base AS deps
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json tsconfig.base.json turbo.json ./
+COPY apps/dashboard/package.json apps/dashboard/package.json
+COPY packages/shared/package.json packages/shared/package.json
+COPY packages/db/package.json packages/db/package.json
+RUN pnpm install --frozen-lockfile
+
+FROM deps AS builder
+COPY . .
+RUN pnpm --filter @pigeon/shared build \
+  && pnpm --filter @pigeon/db build \
+  && pnpm --filter @pigeon/dashboard build
+
+FROM node:20-alpine AS runner
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+WORKDIR /app
+COPY --from=builder /app/apps/dashboard/.next/standalone ./
+COPY --from=builder /app/apps/dashboard/.next/static ./apps/dashboard/.next/static
+EXPOSE 3000
+CMD ["node", "apps/dashboard/server.js"]

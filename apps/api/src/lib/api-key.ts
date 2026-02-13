@@ -57,7 +57,9 @@ export function buildApiKeyLookupPrefixes(apiKey: string): string[] {
   return prefixes
 }
 
-export function inferEnvironmentNameFromApiKey(apiKey: string): 'development' | 'production' | null {
+export function inferEnvironmentNameFromApiKey(
+  apiKey: string,
+): 'development' | 'production' | null {
   if (apiKey.startsWith('pk_test_')) {
     return 'development'
   }

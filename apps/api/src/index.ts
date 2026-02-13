@@ -8,7 +8,7 @@ import { closeRedisClient } from './lib/redis'
 
 const server = serve({
   fetch: app.fetch,
-  port: env.API_PORT
+  port: env.API_PORT,
 })
 
 console.info(`Pigeon API listening on http://localhost:${env.API_PORT}`)

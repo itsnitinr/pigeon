@@ -2,8 +2,12 @@ import { apiKeys, environments } from '@pigeon/db'
 import { and, eq, inArray } from 'drizzle-orm'
 import { createMiddleware } from 'hono/factory'
 
+import {
+  buildApiKeyLookupPrefixes,
+  inferEnvironmentNameFromApiKey,
+  verifyApiKeyHash,
+} from '../lib/api-key'
 import { extractBearerToken } from '../lib/auth'
-import { buildApiKeyLookupPrefixes, inferEnvironmentNameFromApiKey, verifyApiKeyHash } from '../lib/api-key'
 import { db } from '../lib/db'
 import { ApiError } from '../lib/errors'
 import type { AppBindings } from '../types/context'
@@ -24,7 +28,7 @@ export const apiKeyAuthMiddleware = createMiddleware<AppBindings>(async (c, next
       keyHash: apiKeys.keyHash,
       environmentId: environments.id,
       environmentName: environments.name,
-      projectId: environments.projectId
+      projectId: environments.projectId,
     })
     .from(apiKeys)
     .innerJoin(environments, eq(apiKeys.environmentId, environments.id))
@@ -44,7 +48,7 @@ export const apiKeyAuthMiddleware = createMiddleware<AppBindings>(async (c, next
     c.set('apiKeyAuth', {
       apiKeyId: candidate.apiKeyId,
       projectId: candidate.projectId,
-      environmentId: candidate.environmentId
+      environmentId: candidate.environmentId,
     })
 
     await next()

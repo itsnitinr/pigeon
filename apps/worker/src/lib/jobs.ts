@@ -28,13 +28,13 @@ const globalQueueState = globalThis as typeof globalThis & {
 export const webhookDeliveryQueue =
   globalQueueState.__pigeonWorkerWebhookQueue ??
   new Queue<WebhookDeliveryJobData>(WEBHOOK_DELIVERY_QUEUE, {
-    connection: bullmqConnectionOptions
+    connection: bullmqConnectionOptions,
   })
 
 export const maintenanceQueue =
   globalQueueState.__pigeonWorkerMaintenanceQueue ??
   new Queue<CleanupNotificationsJobData>(MAINTENANCE_QUEUE, {
-    connection: bullmqConnectionOptions
+    connection: bullmqConnectionOptions,
   })
 
 if (process.env.NODE_ENV !== 'production') {
@@ -50,11 +50,11 @@ export async function scheduleCleanupJob(ttlDays: number): Promise<void> {
       jobId: 'cleanup-old-notifications',
       repeat: {
         pattern: '0 3 * * *',
-        tz: 'UTC'
+        tz: 'UTC',
       },
       removeOnComplete: 100,
-      removeOnFail: 100
-    }
+      removeOnFail: 100,
+    },
   )
 }
 

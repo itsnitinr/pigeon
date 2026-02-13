@@ -3,8 +3,8 @@ import { randomUUID } from 'node:crypto'
 import type { Context } from 'hono'
 import { createMiddleware } from 'hono/factory'
 
-import { redisClient } from '../lib/redis'
 import { ApiError } from '../lib/errors'
+import { redisClient } from '../lib/redis'
 import type { AppBindings } from '../types/context'
 
 const SLIDING_WINDOW_SCRIPT = `
@@ -68,7 +68,7 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
         String(now),
         String(config.windowMs),
         String(config.limit),
-        `${now}-${requestId}`
+        `${now}-${requestId}`,
       )
     } catch (error) {
       console.error('Rate limit Redis error', error)
@@ -94,10 +94,10 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
           error: {
             code: 'RATE_LIMITED',
             message: 'Rate limit exceeded',
-            requestId: c.get('requestId')
-          }
+            requestId: c.get('requestId'),
+          },
         },
-        429
+        429,
       )
     }
 

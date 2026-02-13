@@ -23,7 +23,7 @@ export async function publishUserEvent(
   environmentId: string,
   externalUserId: string,
   event: StreamEvent['event'],
-  data: StreamEvent['data']
+  data: StreamEvent['data'],
 ): Promise<RealtimeEventEnvelope> {
   const timestamp = new Date().toISOString()
   const streamKey = getUserEventStreamKey(environmentId, externalUserId)
@@ -40,7 +40,7 @@ export async function publishUserEvent(
     'data',
     JSON.stringify(data),
     'timestamp',
-    timestamp
+    timestamp,
   )
 
   if (!streamId) {
@@ -51,7 +51,7 @@ export async function publishUserEvent(
     id: streamId,
     event,
     data,
-    timestamp
+    timestamp,
   }
 
   await redisClient.publish(channel, JSON.stringify(envelope))
@@ -59,10 +59,7 @@ export async function publishUserEvent(
   return envelope
 }
 
-function parseStreamEntry(
-  entryId: string,
-  fields: string[]
-): RealtimeEventEnvelope | null {
+function parseStreamEntry(entryId: string, fields: string[]): RealtimeEventEnvelope | null {
   const fieldMap: Record<string, string> = {}
 
   for (let i = 0; i < fields.length; i += 2) {
@@ -91,7 +88,7 @@ function parseStreamEntry(
       id: entryId,
       event: event as StreamEvent['event'],
       data,
-      timestamp
+      timestamp,
     }
   } catch {
     return null
@@ -102,7 +99,7 @@ export async function readUserEventsSince(
   environmentId: string,
   externalUserId: string,
   lastEventId: string,
-  limit = 100
+  limit = 100,
 ): Promise<RealtimeEventEnvelope[]> {
   const streamKey = getUserEventStreamKey(environmentId, externalUserId)
   let entries: Array<[string, string[]]> = []
@@ -113,7 +110,7 @@ export async function readUserEventsSince(
       String(limit),
       'STREAMS',
       streamKey,
-      lastEventId
+      lastEventId,
     )
 
     const streamEntries = response?.[0]?.[1] ?? []

@@ -16,13 +16,13 @@ const queueConnectionOptions = {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
   ...(redisUrl.username ? { username: redisUrl.username } : {}),
-  ...(redisUrl.password ? { password: redisUrl.password } : {})
+  ...(redisUrl.password ? { password: redisUrl.password } : {}),
 }
 
 const notificationQueue =
   globalQueueState.__pigeonApiQueue ??
   new Queue('notification-delivery', {
-    connection: queueConnectionOptions
+    connection: queueConnectionOptions,
   })
 
 if (env.NODE_ENV !== 'production') {
@@ -33,18 +33,18 @@ export async function enqueueNotificationDelivery(notificationId: string): Promi
   await notificationQueue.add(
     'deliver-notification',
     {
-      notificationId
+      notificationId,
     },
     {
       jobId: notificationId,
       attempts: 5,
       backoff: {
         type: 'exponential',
-        delay: 1000
+        delay: 1000,
       },
       removeOnComplete: 1000,
-      removeOnFail: 1000
-    }
+      removeOnFail: 1000,
+    },
   )
 }
 

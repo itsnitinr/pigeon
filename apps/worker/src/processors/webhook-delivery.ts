@@ -1,16 +1,11 @@
-import {
-  endUsers,
-  notifications,
-  webhookDeliveryAttempts,
-  webhookEndpoints
-} from '@pigeon/db'
-import { and, eq } from 'drizzle-orm'
+import { endUsers, notifications, webhookDeliveryAttempts, webhookEndpoints } from '@pigeon/db'
 import type { Job } from 'bullmq'
+import { and, eq } from 'drizzle-orm'
 
 import type { NotificationRecord } from '@pigeon/shared'
 import { db } from '../lib/db'
-import { deliverWebhook } from '../lib/webhook'
 import type { WebhookDeliveryJobData } from '../lib/jobs'
+import { deliverWebhook } from '../lib/webhook'
 
 interface NotificationWebhookPayload {
   id: string
@@ -58,7 +53,9 @@ function computeNextRetryAt(job: Job<WebhookDeliveryJobData>): Date | null {
   return null
 }
 
-async function loadNotificationPayload(notificationId: string): Promise<NotificationWebhookPayload | null> {
+async function loadNotificationPayload(
+  notificationId: string,
+): Promise<NotificationWebhookPayload | null> {
   const [row] = await db
     .select({
       id: notifications.id,
@@ -71,7 +68,7 @@ async function loadNotificationPayload(notificationId: string): Promise<Notifica
       status: notifications.status,
       createdAt: notifications.createdAt,
       readAt: notifications.readAt,
-      archivedAt: notifications.archivedAt
+      archivedAt: notifications.archivedAt,
     })
     .from(notifications)
     .innerJoin(endUsers, eq(notifications.endUserId, endUsers.id))
@@ -84,7 +81,7 @@ async function loadNotificationPayload(notificationId: string): Promise<Notifica
 
   return {
     ...row,
-    data: (row.data ?? {}) as Record<string, unknown>
+    data: (row.data ?? {}) as Record<string, unknown>,
   }
 }
 
@@ -101,7 +98,7 @@ export async function processWebhookDeliveryJob(job: Job<WebhookDeliveryJobData>
       url: webhookEndpoints.url,
       secret: webhookEndpoints.secret,
       events: webhookEndpoints.events,
-      isActive: webhookEndpoints.isActive
+      isActive: webhookEndpoints.isActive,
     })
     .from(webhookEndpoints)
     .where(eq(webhookEndpoints.id, webhookEndpointId))
@@ -118,7 +115,7 @@ export async function processWebhookDeliveryJob(job: Job<WebhookDeliveryJobData>
   const notification = await loadNotificationPayload(notificationId)
 
   if (!notification) {
-    throw new Error(`Notification ${notificationId} not found for webhook`) 
+    throw new Error(`Notification ${notificationId} not found for webhook`)
   }
 
   const notificationRecord: NotificationRecord = {
@@ -131,14 +128,14 @@ export async function processWebhookDeliveryJob(job: Job<WebhookDeliveryJobData>
     status: notification.status,
     createdAt: notification.createdAt.toISOString(),
     readAt: notification.readAt ? notification.readAt.toISOString() : null,
-    archivedAt: notification.archivedAt ? notification.archivedAt.toISOString() : null
+    archivedAt: notification.archivedAt ? notification.archivedAt.toISOString() : null,
   }
 
   const timestamp = new Date().toISOString()
   const payload = {
     event,
     timestamp,
-    data: notificationRecord
+    data: notificationRecord,
   }
 
   const payloadJson = JSON.stringify(payload)
@@ -154,7 +151,7 @@ export async function processWebhookDeliveryJob(job: Job<WebhookDeliveryJobData>
       status: 'pending',
       requestBody: payload,
       attemptNumber,
-      nextRetryAt
+      nextRetryAt,
     })
     .returning({ id: webhookDeliveryAttempts.id })
 
@@ -172,7 +169,7 @@ export async function processWebhookDeliveryJob(job: Job<WebhookDeliveryJobData>
         responseStatus: deliveryResult.status,
         responseBody: deliveryResult.responseBody,
         error: null,
-        nextRetryAt: null
+        nextRetryAt: null,
       })
       .where(eq(webhookDeliveryAttempts.id, attempt.id))
 
@@ -186,7 +183,7 @@ export async function processWebhookDeliveryJob(job: Job<WebhookDeliveryJobData>
       responseStatus: deliveryResult.status,
       responseBody: deliveryResult.responseBody,
       error: deliveryResult.error,
-      nextRetryAt
+      nextRetryAt,
     })
     .where(eq(webhookDeliveryAttempts.id, attempt.id))
 
@@ -199,7 +196,7 @@ export async function processWebhookDeliveryJob(job: Job<WebhookDeliveryJobData>
       `notificationId=${notificationId}`,
       `attempt=${attemptNumber}`,
       `status=${deliveryResult.status ?? 'none'}`,
-      `error=${deliveryResult.error || 'unknown'}`
-    ].join(' ')
+      `error=${deliveryResult.error || 'unknown'}`,
+    ].join(' '),
   )
 }

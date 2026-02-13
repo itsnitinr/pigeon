@@ -34,13 +34,13 @@ todos:
     status: completed
   - id: phase-11-demo
     content: "Phase 11 - Demo App: Build Express server using @pigeon/node to send notifications. Build React frontend using @pigeon/react to display notifications + unread count + realtime updates. Verify all acceptance criteria from PRD."
-    status: pending
+    status: completed
   - id: phase-12-docker
     content: "Phase 12 - Docker & Self-Hosting: Create multi-stage Dockerfiles for API, Worker, and Dashboard. Create docker-compose.yml for full-stack deployment (all services + PostgreSQL + Redis). Test full stack via docker compose up."
-    status: pending
+    status: completed
   - id: phase-13-polish
     content: "Phase 13 - Polish: Write README with quickstart guide (both local dev and docker compose). Add OpenAPI spec generation (via @hono/zod-openapi or manual). Verify idempotency, webhook retries, SSE reconnection, notification TTL cleanup, and team invite flow work end-to-end."
-    status: pending
+    status: completed
 isProject: false
 ---
 

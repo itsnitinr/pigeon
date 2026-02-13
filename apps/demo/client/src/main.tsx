@@ -1,57 +1,48 @@
-import { StrictMode, useCallback, useEffect, useMemo, useState } from 'react';
-import { createRoot } from 'react-dom/client';
+import { StrictMode, useCallback, useEffect, useMemo, useState } from 'react'
+import { createRoot } from 'react-dom/client'
 
-import {
-  NotificationBell,
-  PigeonProvider,
-  type TokenProvider,
-} from '@pigeon/react';
+import { NotificationBell, PigeonProvider, type TokenProvider } from '@pigeon/react'
 
-const demoServerUrl =
-  import.meta.env.VITE_DEMO_SERVER_URL ?? 'http://localhost:3010';
+const demoServerUrl = import.meta.env.VITE_DEMO_SERVER_URL ?? 'http://localhost:3010'
 
-type LoadState = 'idle' | 'loading' | 'error' | 'ready';
+type LoadState = 'idle' | 'loading' | 'error' | 'ready'
 
 interface DemoConfig {
-  apiBaseUrl: string;
-  defaultUserId: string;
+  apiBaseUrl: string
+  defaultUserId: string
 }
 
 interface TokenResponse {
-  token: string;
-  expiresAt: string;
+  token: string
+  expiresAt: string
 }
 
-type ThemeMode = 'light' | 'dark';
+type ThemeMode = 'light' | 'dark'
 
-const THEME_STORAGE_KEY = 'pigeon-demo-theme';
+const THEME_STORAGE_KEY = 'pigeon-demo-theme'
 
-async function requestJson<T>(
-  path: string,
-  method: 'GET' | 'POST',
-  body?: unknown
-): Promise<T> {
+async function requestJson<T>(path: string, method: 'GET' | 'POST', body?: unknown): Promise<T> {
   const requestInit: RequestInit = {
     method,
     headers: {
       'content-type': 'application/json',
     },
-  };
-
-  if (body !== undefined) {
-    requestInit.body = JSON.stringify(body);
   }
 
-  const response = await fetch(`${demoServerUrl}${path}`, requestInit);
+  if (body !== undefined) {
+    requestInit.body = JSON.stringify(body)
+  }
 
-  const text = await response.text();
-  let data: unknown = null;
+  const response = await fetch(`${demoServerUrl}${path}`, requestInit)
+
+  const text = await response.text()
+  let data: unknown = null
 
   if (text.trim()) {
     try {
-      data = JSON.parse(text);
+      data = JSON.parse(text)
     } catch {
-      data = text;
+      data = text
     }
   }
 
@@ -59,101 +50,87 @@ async function requestJson<T>(
     const message =
       typeof data === 'object' && data !== null && 'error' in data
         ? JSON.stringify(data)
-        : `Request failed with status ${response.status}`;
-    throw new Error(message);
+        : `Request failed with status ${response.status}`
+    throw new Error(message)
   }
 
-  return data as T;
+  return data as T
 }
 
 function App() {
-  const [config, setConfig] = useState<DemoConfig | null>(null);
-  const [loadState, setLoadState] = useState<LoadState>('loading');
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [userId, setUserId] = useState('');
-  const [type, setType] = useState('order.shipped');
-  const [title, setTitle] = useState('Your order has shipped');
-  const [body, setBody] = useState(
-    'Tracking number: TRK-482190. Estimated delivery: Tomorrow.'
-  );
-  const [sending, setSending] = useState(false);
-  const [sendMessage, setSendMessage] = useState<string | null>(null);
-  const [themeMode, setThemeMode] = useState<ThemeMode>('light');
+  const [config, setConfig] = useState<DemoConfig | null>(null)
+  const [loadState, setLoadState] = useState<LoadState>('loading')
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [userId, setUserId] = useState('')
+  const [type, setType] = useState('order.shipped')
+  const [title, setTitle] = useState('Your order has shipped')
+  const [body, setBody] = useState('Tracking number: TRK-482190. Estimated delivery: Tomorrow.')
+  const [sending, setSending] = useState(false)
+  const [sendMessage, setSendMessage] = useState<string | null>(null)
+  const [themeMode, setThemeMode] = useState<ThemeMode>('light')
 
   useEffect(() => {
     const loadConfig = async () => {
       try {
-        const nextConfig = await requestJson<DemoConfig>('/api/config', 'GET');
-        setConfig(nextConfig);
-        setUserId(nextConfig.defaultUserId);
-        setLoadState('ready');
+        const nextConfig = await requestJson<DemoConfig>('/api/config', 'GET')
+        setConfig(nextConfig)
+        setUserId(nextConfig.defaultUserId)
+        setLoadState('ready')
       } catch (error) {
-        setLoadState('error');
-        setLoadError(error instanceof Error ? error.message : String(error));
+        setLoadState('error')
+        setLoadError(error instanceof Error ? error.message : String(error))
       }
-    };
-
-    void loadConfig();
-  }, []);
-
-  useEffect(() => {
-    const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-
-    if (storedTheme === 'light' || storedTheme === 'dark') {
-      setThemeMode(storedTheme);
-      return;
     }
 
-    setThemeMode(
-      document.documentElement.classList.contains('dark') ? 'dark' : 'light'
-    );
-  }, []);
+    void loadConfig()
+  }, [])
 
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.toggle('dark', themeMode === 'dark');
-    root.style.colorScheme = themeMode;
-    window.localStorage.setItem(THEME_STORAGE_KEY, themeMode);
-  }, [themeMode]);
+    const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY)
+
+    if (storedTheme === 'light' || storedTheme === 'dark') {
+      setThemeMode(storedTheme)
+      return
+    }
+
+    setThemeMode(document.documentElement.classList.contains('dark') ? 'dark' : 'light')
+  }, [])
+
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.toggle('dark', themeMode === 'dark')
+    root.style.colorScheme = themeMode
+    window.localStorage.setItem(THEME_STORAGE_KEY, themeMode)
+  }, [themeMode])
 
   const tokenProvider = useMemo<TokenProvider>(() => {
     return async () => {
-      const tokenResult = await requestJson<TokenResponse>(
-        '/api/token',
-        'POST',
-        { userId }
-      );
+      const tokenResult = await requestJson<TokenResponse>('/api/token', 'POST', { userId })
       return {
         token: tokenResult.token,
         expiresAt: tokenResult.expiresAt,
-      };
-    };
-  }, [userId]);
+      }
+    }
+  }, [userId])
 
   const sendNotification = useCallback(async () => {
-    setSending(true);
-    setSendMessage(null);
+    setSending(true)
+    setSendMessage(null)
 
     try {
-      const result = await requestJson<{ id: string; status: string }>(
-        '/api/send',
-        'POST',
-        {
-          userId,
-          type,
-          title,
-          body,
-        }
-      );
-      setSendMessage(`Sent: ${result.id} (${result.status})`);
+      const result = await requestJson<{ id: string; status: string }>('/api/send', 'POST', {
+        userId,
+        type,
+        title,
+        body,
+      })
+      setSendMessage(`Sent: ${result.id} (${result.status})`)
     } catch (error) {
-      setSendMessage(
-        `Send failed: ${error instanceof Error ? error.message : String(error)}`
-      );
+      setSendMessage(`Send failed: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
-      setSending(false);
+      setSending(false)
     }
-  }, [body, title, type, userId]);
+  }, [body, title, type, userId])
 
   if (loadState === 'loading' || loadState === 'idle') {
     return (
@@ -163,7 +140,7 @@ function App() {
           <h1>Preparing demo...</h1>
         </section>
       </main>
-    );
+    )
   }
 
   if (loadState === 'error' || !config) {
@@ -176,7 +153,7 @@ function App() {
           <p>Make sure `@pigeon/demo-server` is running on {demoServerUrl}.</p>
         </section>
       </main>
-    );
+    )
   }
 
   return (
@@ -189,8 +166,7 @@ function App() {
               <p className="demo-eyebrow">Pigeon React SDK Demo</p>
               <h1>Realtime notification bell</h1>
               <p className="demo-subtitle">
-                Send notifications below and watch the bell update instantly via
-                SSE.
+                Send notifications below and watch the bell update instantly via SSE.
               </p>
             </div>
             <div className="demo-header-actions">
@@ -199,18 +175,12 @@ function App() {
                 className="demo-theme-toggle"
                 aria-pressed={themeMode === 'dark'}
                 onClick={() => {
-                  setThemeMode((current) =>
-                    current === 'dark' ? 'light' : 'dark'
-                  );
+                  setThemeMode((current) => (current === 'dark' ? 'light' : 'dark'))
                 }}
               >
                 {themeMode === 'dark' ? 'Switch to light' : 'Switch to dark'}
               </button>
-              <NotificationBell
-                panelTitle="Inbox"
-                pageSize={20}
-                colorMode={themeMode}
-              />
+              <NotificationBell panelTitle="Inbox" pageSize={20} colorMode={themeMode} />
             </div>
           </header>
 
@@ -267,16 +237,15 @@ function App() {
             <article className="demo-card">
               <h2>Quick presets</h2>
               <p className="demo-muted">
-                These are pre-filled examples to quickly generate events and
-                test the bell.
+                These are pre-filled examples to quickly generate events and test the bell.
               </p>
               <div className="demo-presets">
                 <button
                   type="button"
                   onClick={() => {
-                    setType('billing.invoice.paid');
-                    setTitle('Invoice paid');
-                    setBody('Invoice #INV-8042 was successfully paid.');
+                    setType('billing.invoice.paid')
+                    setTitle('Invoice paid')
+                    setBody('Invoice #INV-8042 was successfully paid.')
                   }}
                 >
                   Invoice Paid
@@ -284,9 +253,9 @@ function App() {
                 <button
                   type="button"
                   onClick={() => {
-                    setType('security.new-login');
-                    setTitle('New login detected');
-                    setBody('New login from Chrome on macOS, San Francisco.');
+                    setType('security.new-login')
+                    setTitle('New login detected')
+                    setBody('New login from Chrome on macOS, San Francisco.')
                   }}
                 >
                   Security Alert
@@ -294,9 +263,9 @@ function App() {
                 <button
                   type="button"
                   onClick={() => {
-                    setType('message.received');
-                    setTitle('New message');
-                    setBody('You have a new message from support.');
+                    setType('message.received')
+                    setTitle('New message')
+                    setBody('You have a new message from support.')
                   }}
                 >
                   Message
@@ -313,7 +282,7 @@ function App() {
         </section>
       </main>
     </PigeonProvider>
-  );
+  )
 }
 
 const DEMO_STYLES = `
@@ -608,16 +577,16 @@ const DEMO_STYLES = `
       justify-content: space-between;
     }
   }
-`;
+`
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById('root')
 
 if (!rootElement) {
-  throw new Error('Missing #root element');
+  throw new Error('Missing #root element')
 }
 
 createRoot(rootElement).render(
   <StrictMode>
     <App />
-  </StrictMode>
-);
+  </StrictMode>,
+)

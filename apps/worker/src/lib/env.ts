@@ -53,14 +53,18 @@ function parsePositiveInt(value: string | undefined, defaultValue: number, label
   const parsed = Number(value)
 
   if (!Number.isInteger(parsed) || parsed <= 0) {
-    throw new Error(`${label} must be a positive integer`) 
+    throw new Error(`${label} must be a positive integer`)
   }
 
   return parsed
 }
 
 const currentDir = dirname(fileURLToPath(import.meta.url))
-const rootCandidates = [resolve(currentDir, '../../../../'), resolve(currentDir, '../../../'), process.cwd()]
+const rootCandidates = [
+  resolve(currentDir, '../../../../'),
+  resolve(currentDir, '../../../'),
+  process.cwd(),
+]
 
 for (const rootPath of rootCandidates) {
   loadEnvFile(resolve(rootPath, '.env'))
@@ -81,6 +85,14 @@ export const env = {
   NODE_ENV: (nodeEnv || 'development') as 'development' | 'test' | 'production',
   DATABASE_URL: databaseUrl,
   REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
-  WEBHOOK_TIMEOUT_MS: parsePositiveInt(process.env.WEBHOOK_TIMEOUT_MS, 10_000, 'WEBHOOK_TIMEOUT_MS'),
-  NOTIFICATION_TTL_DAYS: parsePositiveInt(process.env.NOTIFICATION_TTL_DAYS, 90, 'NOTIFICATION_TTL_DAYS')
+  WEBHOOK_TIMEOUT_MS: parsePositiveInt(
+    process.env.WEBHOOK_TIMEOUT_MS,
+    10_000,
+    'WEBHOOK_TIMEOUT_MS',
+  ),
+  NOTIFICATION_TTL_DAYS: parsePositiveInt(
+    process.env.NOTIFICATION_TTL_DAYS,
+    90,
+    'NOTIFICATION_TTL_DAYS',
+  ),
 }

@@ -1,4 +1,4 @@
-import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { type NodePgDatabase, drizzle } from 'drizzle-orm/node-postgres'
 import { Pool, type PoolConfig } from 'pg'
 
 import * as schema from './schema'
@@ -28,7 +28,7 @@ export function createDbClient(options: CreateDbClientOptions = {}): DbClient {
 
   return {
     db,
-    pool
+    pool,
   }
 }
 

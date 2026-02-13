@@ -4,7 +4,7 @@ import type {
   NOTIFICATION_STATUSES,
   PROJECT_MEMBER_ROLES,
   WEBHOOK_DELIVERY_STATUSES,
-  WEBHOOK_EVENTS
+  WEBHOOK_EVENTS,
 } from './constants'
 
 export type EnvironmentName = (typeof ENVIRONMENT_NAMES)[number]

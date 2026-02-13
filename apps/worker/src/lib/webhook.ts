@@ -50,7 +50,7 @@ function formatWebhookError(error: unknown): string {
       typedCause.code,
       typedCause.syscall,
       typedCause.address ? `${typedCause.address}:${typedCause.port ?? ''}` : undefined,
-      typedCause.message
+      typedCause.message,
     ].filter(Boolean)
 
     if (parts.length > 0) {
@@ -65,7 +65,7 @@ export async function deliverWebhook(
   url: string,
   event: string,
   secret: string,
-  payload: string
+  payload: string,
 ): Promise<WebhookRequestResult> {
   const controller = new AbortController()
   const timeout = setTimeout(() => {
@@ -81,10 +81,10 @@ export async function deliverWebhook(
         'content-type': 'application/json',
         'x-pigeon-event': event,
         'x-pigeon-signature': signature,
-        'user-agent': 'pigeon-worker/0.1'
+        'user-agent': 'pigeon-worker/0.1',
       },
       body: payload,
-      signal: controller.signal
+      signal: controller.signal,
     })
 
     const responseText = trimResponseBody(await response.text())
@@ -93,7 +93,7 @@ export async function deliverWebhook(
       ok: response.ok,
       status: response.status,
       responseBody: responseText,
-      error: response.ok ? null : `Webhook returned status ${response.status}`
+      error: response.ok ? null : `Webhook returned status ${response.status}`,
     }
   } catch (error) {
     const message = formatWebhookError(error)
@@ -102,7 +102,7 @@ export async function deliverWebhook(
       ok: false,
       status: null,
       responseBody: null,
-      error: message
+      error: message,
     }
   } finally {
     clearTimeout(timeout)

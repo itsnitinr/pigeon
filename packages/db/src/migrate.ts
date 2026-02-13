@@ -1,7 +1,7 @@
-import { config as loadEnv } from 'dotenv'
-import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { config as loadEnv } from 'dotenv'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
 
 import { createDbClient } from './client'
 
@@ -16,7 +16,7 @@ const { db, pool } = createDbClient()
 
 try {
   await migrate(db, {
-    migrationsFolder
+    migrationsFolder,
   })
   console.info('Database migrations applied successfully.')
 } finally {

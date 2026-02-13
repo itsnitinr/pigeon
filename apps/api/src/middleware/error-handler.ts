@@ -1,9 +1,9 @@
-import type { ContentfulStatusCode } from 'hono/utils/http-status'
-import { HTTPException } from 'hono/http-exception'
 import { createMiddleware } from 'hono/factory'
+import { HTTPException } from 'hono/http-exception'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
-import type { AppBindings } from '../types/context'
 import { ApiError } from '../lib/errors'
+import type { AppBindings } from '../types/context'
 
 export const errorHandlingMiddleware = createMiddleware<AppBindings>(async (c, next) => {
   try {
@@ -18,10 +18,10 @@ export const errorHandlingMiddleware = createMiddleware<AppBindings>(async (c, n
             code: error.code,
             message: error.message,
             requestId,
-            details: error.details
-          }
+            details: error.details,
+          },
         },
-        error.status as ContentfulStatusCode
+        error.status as ContentfulStatusCode,
       )
     }
 
@@ -31,10 +31,10 @@ export const errorHandlingMiddleware = createMiddleware<AppBindings>(async (c, n
           error: {
             code: 'HTTP_ERROR',
             message: error.message,
-            requestId
-          }
+            requestId,
+          },
         },
-        error.status
+        error.status,
       )
     }
 
@@ -45,10 +45,10 @@ export const errorHandlingMiddleware = createMiddleware<AppBindings>(async (c, n
         error: {
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Something went wrong',
-          requestId
-        }
+          requestId,
+        },
       },
-      500
+      500,
     )
   }
 })

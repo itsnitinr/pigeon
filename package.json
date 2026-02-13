@@ -9,10 +9,12 @@
     "typecheck": "turbo typecheck",
     "format": "biome format --write .",
     "check": "biome check .",
+    "openapi:generate": "node scripts/generate-openapi.mjs",
     "test:phase4": "node packages/db/scripts/phase4-smoke-test.mjs",
     "test:phase5": "node packages/db/scripts/phase5-smoke-test.mjs",
     "test:phase6": "node packages/db/scripts/phase6-smoke-test.mjs",
-    "test:phase7": "node packages/db/scripts/phase7-smoke-test.mjs"
+    "test:phase7": "node packages/db/scripts/phase7-smoke-test.mjs",
+    "test:phase11": "node packages/db/scripts/phase11-smoke-test.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

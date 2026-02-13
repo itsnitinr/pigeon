@@ -1,11 +1,6 @@
-import {
-  endUsers,
-  notifications,
-  templates,
-  webhookEndpoints
-} from '@pigeon/db'
-import { and, eq } from 'drizzle-orm'
+import { endUsers, notifications, templates, webhookEndpoints } from '@pigeon/db'
 import type { Job } from 'bullmq'
+import { and, eq } from 'drizzle-orm'
 
 import type { NotificationRecord } from '@pigeon/shared'
 import { db } from '../lib/db'
@@ -45,7 +40,7 @@ async function loadNotification(notificationId: string): Promise<NotificationWit
       createdAt: notifications.createdAt,
       readAt: notifications.readAt,
       archivedAt: notifications.archivedAt,
-      externalUserId: endUsers.externalUserId
+      externalUserId: endUsers.externalUserId,
     })
     .from(notifications)
     .innerJoin(endUsers, eq(notifications.endUserId, endUsers.id))
@@ -58,11 +53,13 @@ async function loadNotification(notificationId: string): Promise<NotificationWit
 
   return {
     ...row,
-    data: (row.data ?? {}) as Record<string, unknown>
+    data: (row.data ?? {}) as Record<string, unknown>,
   }
 }
 
-export async function processNotificationDeliveryJob(job: Job<NotificationDeliveryJobData>): Promise<void> {
+export async function processNotificationDeliveryJob(
+  job: Job<NotificationDeliveryJobData>,
+): Promise<void> {
   const notificationId = job.data.notificationId
 
   if (!notificationId) {
@@ -78,19 +75,23 @@ export async function processNotificationDeliveryJob(job: Job<NotificationDelive
   const [template] = await db
     .select({
       titleTemplate: templates.titleTemplate,
-      bodyTemplate: templates.bodyTemplate
+      bodyTemplate: templates.bodyTemplate,
     })
     .from(templates)
     .where(
       and(
         eq(templates.environmentId, notification.environmentId),
-        eq(templates.type, notification.type)
-      )
+        eq(templates.type, notification.type),
+      ),
     )
     .limit(1)
 
-  const nextTitle = template ? renderTemplate(template.titleTemplate, notification.data) : notification.title
-  const nextBody = template ? renderTemplate(template.bodyTemplate, notification.data) : notification.body
+  const nextTitle = template
+    ? renderTemplate(template.titleTemplate, notification.data)
+    : notification.title
+  const nextBody = template
+    ? renderTemplate(template.bodyTemplate, notification.data)
+    : notification.body
   const updatedAt = new Date()
 
   const [updated] = await db
@@ -99,7 +100,7 @@ export async function processNotificationDeliveryJob(job: Job<NotificationDelive
       title: nextTitle,
       body: nextBody,
       status: 'delivered',
-      updatedAt
+      updatedAt,
     })
     .where(eq(notifications.id, notificationId))
     .returning({
@@ -111,7 +112,7 @@ export async function processNotificationDeliveryJob(job: Job<NotificationDelive
       readAt: notifications.readAt,
       archivedAt: notifications.archivedAt,
       type: notifications.type,
-      data: notifications.data
+      data: notifications.data,
     })
 
   if (!updated) {
@@ -128,27 +129,27 @@ export async function processNotificationDeliveryJob(job: Job<NotificationDelive
     status: updated.status,
     createdAt: updated.createdAt.toISOString(),
     readAt: updated.readAt ? updated.readAt.toISOString() : null,
-    archivedAt: updated.archivedAt ? updated.archivedAt.toISOString() : null
+    archivedAt: updated.archivedAt ? updated.archivedAt.toISOString() : null,
   }
 
   await publishUserEvent(
     notification.environmentId,
     notification.externalUserId,
     'notification.created',
-    eventPayload
+    eventPayload,
   )
 
   const endpoints = await db
     .select({
       id: webhookEndpoints.id,
-      events: webhookEndpoints.events
+      events: webhookEndpoints.events,
     })
     .from(webhookEndpoints)
     .where(
       and(
         eq(webhookEndpoints.environmentId, notification.environmentId),
-        eq(webhookEndpoints.isActive, true)
-      )
+        eq(webhookEndpoints.isActive, true),
+      ),
     )
 
   await Promise.all(
@@ -160,19 +161,19 @@ export async function processNotificationDeliveryJob(job: Job<NotificationDelive
           {
             webhookEndpointId: endpoint.id,
             notificationId: notification.id,
-            event: 'notification.created'
+            event: 'notification.created',
           },
           {
             jobId: `${notification.id}:${endpoint.id}:notification.created`,
             attempts: 6,
             backoff: {
               type: 'exponential',
-              delay: 30_000
+              delay: 30_000,
             },
             removeOnComplete: 1000,
-            removeOnFail: 1000
-          }
-        )
-      )
+            removeOnFail: 1000,
+          },
+        ),
+      ),
   )
 }

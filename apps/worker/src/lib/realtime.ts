@@ -16,7 +16,7 @@ export async function publishUserEvent(
   environmentId: string,
   externalUserId: string,
   event: StreamEvent['event'],
-  data: StreamEvent['data']
+  data: StreamEvent['data'],
 ): Promise<void> {
   const timestamp = new Date().toISOString()
   const streamKey = getUserEventStreamKey(environmentId, externalUserId)
@@ -33,7 +33,7 @@ export async function publishUserEvent(
     'data',
     JSON.stringify(data),
     'timestamp',
-    timestamp
+    timestamp,
   )
 
   if (!streamId) {
@@ -46,7 +46,7 @@ export async function publishUserEvent(
       id: streamId,
       event,
       data,
-      timestamp
-    })
+      timestamp,
+    }),
   )
 }

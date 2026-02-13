@@ -8,6 +8,6 @@ healthRoutes.get('/health', (c) => {
   return c.json({
     status: 'ok',
     service: 'pigeon-api',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 })

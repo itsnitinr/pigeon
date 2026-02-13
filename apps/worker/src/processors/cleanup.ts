@@ -1,5 +1,5 @@
-import { sql } from 'drizzle-orm'
 import type { Job } from 'bullmq'
+import { sql } from 'drizzle-orm'
 
 import { db } from '../lib/db'
 import { env } from '../lib/env'
@@ -26,7 +26,7 @@ function getRowCount(result: unknown): number {
 }
 
 export async function processCleanupNotificationsJob(
-  job: Job<CleanupNotificationsJobData>
+  job: Job<CleanupNotificationsJobData>,
 ): Promise<{ deletedCount: number }> {
   const ttlDays = job.data.ttlDays ?? env.NOTIFICATION_TTL_DAYS
 

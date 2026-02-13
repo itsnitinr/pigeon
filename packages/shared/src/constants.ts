@@ -10,7 +10,7 @@ export const WEBHOOK_DELIVERY_STATUSES = ['pending', 'success', 'failed'] as con
 
 export const API_KEY_PREFIX_BY_ENVIRONMENT = {
   development: 'pk_test_',
-  production: 'pk_live_'
+  production: 'pk_live_',
 } as const
 
 export const DEFAULT_USER_TOKEN_TTL_SECONDS = 60 * 60

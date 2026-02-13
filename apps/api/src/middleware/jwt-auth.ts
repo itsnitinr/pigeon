@@ -25,7 +25,7 @@ export const jwtAuthMiddleware = createMiddleware<AppBindings>(async (c, next) =
     .select({
       id: environments.id,
       projectId: environments.projectId,
-      jwtSecret: environments.jwtSecret
+      jwtSecret: environments.jwtSecret,
     })
     .from(environments)
     .where(eq(environments.id, payload.eid))
@@ -56,7 +56,7 @@ export const jwtAuthMiddleware = createMiddleware<AppBindings>(async (c, next) =
     externalUserId: verified.sub,
     projectId: verified.pid,
     environmentId: verified.eid,
-    expiresAt: new Date(verified.exp * 1000).toISOString()
+    expiresAt: new Date(verified.exp * 1000).toISOString(),
   })
 
   await next()

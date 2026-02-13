@@ -10,7 +10,7 @@ import {
   timestamp,
   uniqueIndex,
   uuid,
-  varchar
+  varchar,
 } from 'drizzle-orm/pg-core'
 
 import {
@@ -18,14 +18,17 @@ import {
   NOTIFICATION_STATUSES,
   PROJECT_MEMBER_ROLES,
   WEBHOOK_DELIVERY_STATUSES,
-  WEBHOOK_EVENTS
+  WEBHOOK_EVENTS,
 } from '@pigeon/shared'
 
 export const environmentNameEnum = pgEnum('environment_name', ENVIRONMENT_NAMES)
 export const projectMemberRoleEnum = pgEnum('project_member_role', PROJECT_MEMBER_ROLES)
 export const notificationStatusEnum = pgEnum('notification_status', NOTIFICATION_STATUSES)
 export const webhookEventEnum = pgEnum('webhook_event', WEBHOOK_EVENTS)
-export const webhookDeliveryStatusEnum = pgEnum('webhook_delivery_status', WEBHOOK_DELIVERY_STATUSES)
+export const webhookDeliveryStatusEnum = pgEnum(
+  'webhook_delivery_status',
+  WEBHOOK_DELIVERY_STATUSES,
+)
 
 export const users = pgTable(
   'users',
@@ -36,11 +39,11 @@ export const users = pgTable(
     emailVerified: boolean('email_verified').notNull().default(false),
     image: text('image'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
-    emailUnique: uniqueIndex('users_email_unique').on(table.email)
-  })
+    emailUnique: uniqueIndex('users_email_unique').on(table.email),
+  }),
 )
 
 export const sessions = pgTable(
@@ -55,12 +58,12 @@ export const sessions = pgTable(
     ipAddress: text('ip_address'),
     userAgent: text('user_agent'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     tokenUnique: uniqueIndex('sessions_token_unique').on(table.token),
-    userIdIdx: index('sessions_user_id_idx').on(table.userId)
-  })
+    userIdIdx: index('sessions_user_id_idx').on(table.userId),
+  }),
 )
 
 export const accounts = pgTable(
@@ -80,15 +83,15 @@ export const accounts = pgTable(
     scope: text('scope'),
     password: text('password'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     providerAccountUnique: uniqueIndex('accounts_provider_account_unique').on(
       table.providerId,
-      table.accountId
+      table.accountId,
     ),
-    userIdIdx: index('accounts_user_id_idx').on(table.userId)
-  })
+    userIdIdx: index('accounts_user_id_idx').on(table.userId),
+  }),
 )
 
 export const verifications = pgTable(
@@ -99,14 +102,14 @@ export const verifications = pgTable(
     value: text('value').notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     identifierValueUnique: uniqueIndex('verifications_identifier_value_unique').on(
       table.identifier,
-      table.value
-    )
-  })
+      table.value,
+    ),
+  }),
 )
 
 export const projects = pgTable(
@@ -116,11 +119,11 @@ export const projects = pgTable(
     name: text('name').notNull(),
     slug: text('slug').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
-    slugUnique: uniqueIndex('projects_slug_unique').on(table.slug)
-  })
+    slugUnique: uniqueIndex('projects_slug_unique').on(table.slug),
+  }),
 )
 
 export const projectMembers = pgTable(
@@ -134,16 +137,16 @@ export const projectMembers = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     role: projectMemberRoleEnum('role').notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     projectUserUnique: uniqueIndex('project_members_project_user_unique').on(
       table.projectId,
-      table.userId
+      table.userId,
     ),
     projectIdIdx: index('project_members_project_id_idx').on(table.projectId),
-    userIdIdx: index('project_members_user_id_idx').on(table.userId)
-  })
+    userIdIdx: index('project_members_user_id_idx').on(table.userId),
+  }),
 )
 
 export const projectInvites = pgTable(
@@ -161,12 +164,12 @@ export const projectInvites = pgTable(
     token: text('token').notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
     acceptedAt: timestamp('accepted_at', { withTimezone: true }),
-    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     tokenUnique: uniqueIndex('project_invites_token_unique').on(table.token),
-    projectEmailIdx: index('project_invites_project_email_idx').on(table.projectId, table.email)
-  })
+    projectEmailIdx: index('project_invites_project_email_idx').on(table.projectId, table.email),
+  }),
 )
 
 export const environments = pgTable(
@@ -178,14 +181,14 @@ export const environments = pgTable(
       .references(() => projects.id, { onDelete: 'cascade' }),
     name: environmentNameEnum('name').notNull(),
     jwtSecret: text('jwt_secret').notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     projectEnvironmentUnique: uniqueIndex('environments_project_name_unique').on(
       table.projectId,
-      table.name
-    )
-  })
+      table.name,
+    ),
+  }),
 )
 
 export const apiKeys = pgTable(
@@ -200,12 +203,12 @@ export const apiKeys = pgTable(
     keyPrefix: varchar('key_prefix', { length: 32 }).notNull(),
     isRevoked: boolean('is_revoked').notNull().default(false),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    revokedAt: timestamp('revoked_at', { withTimezone: true })
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
   },
   (table) => ({
     environmentIdIdx: index('api_keys_environment_id_idx').on(table.environmentId),
-    keyPrefixIdx: index('api_keys_key_prefix_idx').on(table.keyPrefix)
-  })
+    keyPrefixIdx: index('api_keys_key_prefix_idx').on(table.keyPrefix),
+  }),
 )
 
 export const endUsers = pgTable(
@@ -219,18 +222,18 @@ export const endUsers = pgTable(
       .notNull()
       .references(() => environments.id, { onDelete: 'cascade' }),
     externalUserId: text('external_user_id').notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     environmentExternalUserUnique: uniqueIndex('end_users_environment_external_user_unique').on(
       table.environmentId,
-      table.externalUserId
+      table.externalUserId,
     ),
     projectEnvironmentIdx: index('end_users_project_environment_idx').on(
       table.projectId,
-      table.environmentId
-    )
-  })
+      table.environmentId,
+    ),
+  }),
 )
 
 export const notifications = pgTable(
@@ -255,19 +258,19 @@ export const notifications = pgTable(
     status: notificationStatusEnum('status').notNull().default('queued'),
     idempotencyKey: text('idempotency_key'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     environmentEndUserCreatedAtIdx: index('notifications_environment_end_user_created_at_idx').on(
       table.environmentId,
       table.endUserId,
-      desc(table.createdAt)
+      desc(table.createdAt),
     ),
     createdAtIdx: index('notifications_created_at_idx').on(table.createdAt),
     idempotencyUnique: uniqueIndex('notifications_environment_idempotency_unique')
       .on(table.environmentId, table.idempotencyKey)
-      .where(sql`${table.idempotencyKey} IS NOT NULL`)
-  })
+      .where(sql`${table.idempotencyKey} IS NOT NULL`),
+  }),
 )
 
 export const webhookEndpoints = pgTable(
@@ -282,11 +285,11 @@ export const webhookEndpoints = pgTable(
     events: text('events').array().notNull(),
     isActive: boolean('is_active').notNull().default(true),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
-    environmentIdIdx: index('webhook_endpoints_environment_id_idx').on(table.environmentId)
-  })
+    environmentIdIdx: index('webhook_endpoints_environment_id_idx').on(table.environmentId),
+  }),
 )
 
 export const webhookDeliveryAttempts = pgTable(
@@ -296,7 +299,9 @@ export const webhookDeliveryAttempts = pgTable(
     webhookEndpointId: uuid('webhook_endpoint_id')
       .notNull()
       .references(() => webhookEndpoints.id, { onDelete: 'cascade' }),
-    notificationId: uuid('notification_id').references(() => notifications.id, { onDelete: 'cascade' }),
+    notificationId: uuid('notification_id').references(() => notifications.id, {
+      onDelete: 'cascade',
+    }),
     event: webhookEventEnum('event').notNull(),
     status: webhookDeliveryStatusEnum('status').notNull().default('pending'),
     requestBody: jsonb('request_body').$type<Record<string, unknown>>().notNull(),
@@ -305,12 +310,14 @@ export const webhookDeliveryAttempts = pgTable(
     error: text('error'),
     attemptNumber: integer('attempt_number').notNull().default(1),
     nextRetryAt: timestamp('next_retry_at', { withTimezone: true }),
-    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     endpointIdIdx: index('webhook_delivery_attempts_endpoint_id_idx').on(table.webhookEndpointId),
-    notificationIdIdx: index('webhook_delivery_attempts_notification_id_idx').on(table.notificationId)
-  })
+    notificationIdIdx: index('webhook_delivery_attempts_notification_id_idx').on(
+      table.notificationId,
+    ),
+  }),
 )
 
 export const templates = pgTable(
@@ -324,13 +331,13 @@ export const templates = pgTable(
     titleTemplate: text('title_template').notNull(),
     bodyTemplate: text('body_template').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     environmentTypeUnique: uniqueIndex('templates_environment_type_unique').on(
       table.environmentId,
-      table.type
+      table.type,
     ),
-    environmentIdIdx: index('templates_environment_id_idx').on(table.environmentId)
-  })
+    environmentIdIdx: index('templates_environment_id_idx').on(table.environmentId),
+  }),
 )

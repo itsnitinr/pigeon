@@ -17,13 +17,13 @@ function parseRedisConfig(redisUrl: string): ParsedRedisConfig {
   const baseConfig: ParsedRedisConfig = {
     host: parsed.hostname,
     port: Number(parsed.port || 6379),
-    db: dbPath ? Number(dbPath) || 0 : 0
+    db: dbPath ? Number(dbPath) || 0 : 0,
   }
 
   return {
     ...baseConfig,
     ...(parsed.username ? { username: parsed.username } : {}),
-    ...(parsed.password ? { password: parsed.password } : {})
+    ...(parsed.password ? { password: parsed.password } : {}),
   }
 }
 
@@ -38,7 +38,7 @@ export const redisClient =
   new IORedis({
     ...redisConnectionConfig,
     maxRetriesPerRequest: null,
-    enableReadyCheck: false
+    enableReadyCheck: false,
   })
 
 if (env.NODE_ENV !== 'production') {
@@ -49,7 +49,7 @@ export function createRedisSubscriber(): IORedis {
   return new IORedis({
     ...redisConnectionConfig,
     maxRetriesPerRequest: null,
-    enableReadyCheck: false
+    enableReadyCheck: false,
   })
 }
 

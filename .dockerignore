@@ -1,0 +1,16 @@
+.git
+.gitignore
+.cursor
+.turbo
+node_modules
+**/node_modules
+dist
+**/dist
+.next
+**/.next
+coverage
+*.log
+.DS_Store
+tmp
+*.tsbuildinfo
+apps/demo/client/dist

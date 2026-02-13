@@ -7,9 +7,9 @@ import {
   NOTIFICATION_DELIVERY_QUEUE,
   WEBHOOK_DELIVERY_QUEUE,
   closeQueues,
-  scheduleCleanupJob
+  scheduleCleanupJob,
 } from './lib/jobs'
-import { closeRedisClient, bullmqConnectionOptions } from './lib/redis'
+import { bullmqConnectionOptions, closeRedisClient } from './lib/redis'
 import { processCleanupNotificationsJob } from './processors/cleanup'
 import { processNotificationDeliveryJob } from './processors/notification-delivery'
 import { processWebhookDeliveryJob } from './processors/webhook-delivery'
@@ -19,30 +19,30 @@ function serializeError(error: unknown): Record<string, string | null> {
     return {
       name: error.name,
       message: error.message,
-      stack: error.stack ?? null
+      stack: error.stack ?? null,
     }
   }
 
   return {
     name: 'UnknownError',
     message: String(error),
-    stack: null
+    stack: null,
   }
 }
 
 const notificationWorker = new Worker(NOTIFICATION_DELIVERY_QUEUE, processNotificationDeliveryJob, {
   connection: bullmqConnectionOptions,
-  concurrency: 20
+  concurrency: 20,
 })
 
 const webhookWorker = new Worker(WEBHOOK_DELIVERY_QUEUE, processWebhookDeliveryJob, {
   connection: bullmqConnectionOptions,
-  concurrency: 10
+  concurrency: 10,
 })
 
 const maintenanceWorker = new Worker(MAINTENANCE_QUEUE, processCleanupNotificationsJob, {
   connection: bullmqConnectionOptions,
-  concurrency: 1
+  concurrency: 1,
 })
 
 notificationWorker.on('completed', (job) => {
@@ -54,7 +54,7 @@ notificationWorker.on('failed', (job, error) => {
     jobId: job?.id ?? null,
     attemptsMade: job?.attemptsMade ?? 0,
     data: job?.data ?? null,
-    error: serializeError(error)
+    error: serializeError(error),
   })
 })
 
@@ -67,7 +67,7 @@ webhookWorker.on('failed', (job, error) => {
     jobId: job?.id ?? null,
     attemptsMade: job?.attemptsMade ?? 0,
     data: job?.data ?? null,
-    error: serializeError(error)
+    error: serializeError(error),
   })
 })
 
@@ -85,14 +85,14 @@ maintenanceWorker.on('failed', (job, error) => {
     jobId: job?.id ?? null,
     attemptsMade: job?.attemptsMade ?? 0,
     data: job?.data ?? null,
-    error: serializeError(error)
+    error: serializeError(error),
   })
 })
 
 await Promise.all([
   notificationWorker.waitUntilReady(),
   webhookWorker.waitUntilReady(),
-  maintenanceWorker.waitUntilReady()
+  maintenanceWorker.waitUntilReady(),
 ])
 
 await scheduleCleanupJob(env.NOTIFICATION_TTL_DAYS)
@@ -115,7 +115,7 @@ const shutdown = async () => {
     maintenanceWorker.close(),
     closeQueues(),
     closeRedisClient(),
-    pool.end()
+    pool.end(),
   ])
 }
 

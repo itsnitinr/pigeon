@@ -15,7 +15,11 @@ function decodeBase64Url(value: string): string {
   }
 }
 
-function parseToken(token: string): { headerSegment: string; payloadSegment: string; signatureSegment: string } {
+function parseToken(token: string): {
+  headerSegment: string
+  payloadSegment: string
+  signatureSegment: string
+} {
   const [headerSegment, payloadSegment, signatureSegment, ...rest] = token.split('.')
 
   if (!headerSegment || !payloadSegment || !signatureSegment || rest.length > 0) {
@@ -72,7 +76,9 @@ export function verifyHs256Jwt(token: string, secret: string): unknown {
 }
 
 export function signHs256Jwt(payload: Record<string, unknown>, secret: string): string {
-  const headerSegment = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url')
+  const headerSegment = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString(
+    'base64url',
+  )
   const payloadSegment = Buffer.from(JSON.stringify(payload)).toString('base64url')
   const signatureSegment = createHmac('sha256', secret)
     .update(`${headerSegment}.${payloadSegment}`)

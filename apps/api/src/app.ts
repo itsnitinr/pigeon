@@ -29,8 +29,8 @@ app.use(
     allowMethods: ['GET', 'POST', 'OPTIONS'],
     allowHeaders: ['Authorization', 'Content-Type', 'Last-Event-ID'],
     exposeHeaders: ['Retry-After'],
-    maxAge: 86_400
-  })
+    maxAge: 86_400,
+  }),
 )
 app.use('*', errorHandlingMiddleware)
 
@@ -43,9 +43,9 @@ app.notFound((c) => {
       error: {
         code: 'NOT_FOUND',
         message: 'Route not found',
-        requestId: c.get('requestId')
-      }
+        requestId: c.get('requestId'),
+      },
     },
-    404
+    404,
   )
 })
