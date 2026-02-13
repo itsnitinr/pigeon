@@ -58,6 +58,7 @@ for (const rootPath of rootCandidates) {
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   API_PORT: z.coerce.number().int().positive().default(3001),
+  CORS_ORIGINS: z.string().default('*'),
   DATABASE_URL: z.string().min(1),
   REDIS_URL: z.string().min(1).default('redis://localhost:6379'),
   JWT_TTL_SECONDS: z.coerce.number().int().positive().default(3600)

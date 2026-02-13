@@ -25,7 +25,7 @@ todos:
     status: completed
   - id: phase-8-sdk-react
     content: "Phase 8 - Frontend SDK (@pigeon/react): Implement PigeonProvider (context, token management, SSE connection). Implement useNotifications hook (list, unreadCount, markRead, markAllRead, archive, fetchMore, connectionStatus). SSE auto-reconnect with exponential backoff. Optimistic updates. Build with tsup."
-    status: pending
+    status: completed
   - id: phase-9-dashboard-auth
     content: "Phase 9 - Dashboard (Auth + Layout): Scaffold Next.js 15 app with App Router. Set up Better Auth (email/password, sessions). Create login/register pages. Build dashboard layout (sidebar nav, project switcher, environment selector). Set up shadcn/ui + Tailwind v4."
     status: pending
