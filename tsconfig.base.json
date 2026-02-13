@@ -3,8 +3,8 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2023"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
@@ -16,7 +16,14 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@pigeon/shared": ["packages/shared/src/index.ts"],
+      "@pigeon/db": ["packages/db/src/index.ts"],
+      "@pigeon/node": ["packages/sdk-node/src/index.ts"],
+      "@pigeon/react": ["packages/sdk-react/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "dist", ".turbo", ".next"]
 }

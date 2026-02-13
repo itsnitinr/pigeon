@@ -1,1 +1,2 @@
-export const placeholder = 'db-package-scaffold'
+export * from './client'
+export * from './schema'
