@@ -28,10 +28,10 @@ todos:
     status: completed
   - id: phase-9-dashboard-auth
     content: "Phase 9 - Dashboard (Auth + Layout): Scaffold Next.js 15 app with App Router. Set up Better Auth (email/password, sessions). Create login/register pages. Build dashboard layout (sidebar nav, project switcher, environment selector). Set up shadcn/ui + Tailwind v4."
-    status: pending
+    status: completed
   - id: phase-10-dashboard-features
     content: "Phase 10 - Dashboard (Features): Implement project CRUD, team member management (invite by email, role-based: owner/member), API key management (create/revoke/show-once), notification logs (searchable table with filters), user inspector page, template CRUD, webhook endpoint CRUD + delivery attempt viewer."
-    status: pending
+    status: completed
   - id: phase-11-demo
     content: "Phase 11 - Demo App: Build Express server using @pigeon/node to send notifications. Build React frontend using @pigeon/react to display notifications + unread count + realtime updates. Verify all acceptance criteria from PRD."
     status: pending
