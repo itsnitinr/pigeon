@@ -11,7 +11,8 @@
     "check": "biome check .",
     "test:phase4": "node packages/db/scripts/phase4-smoke-test.mjs",
     "test:phase5": "node packages/db/scripts/phase5-smoke-test.mjs",
-    "test:phase6": "node packages/db/scripts/phase6-smoke-test.mjs"
+    "test:phase6": "node packages/db/scripts/phase6-smoke-test.mjs",
+    "test:phase7": "node packages/db/scripts/phase7-smoke-test.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

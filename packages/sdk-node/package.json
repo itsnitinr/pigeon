@@ -19,9 +19,6 @@
     "lint": "biome check src",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
-  "dependencies": {
-    "@pigeon/shared": "workspace:*"
-  },
   "devDependencies": {
     "tsup": "^8.3.5",
     "typescript": "^5.7.3"

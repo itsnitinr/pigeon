@@ -22,7 +22,7 @@ todos:
     status: completed
   - id: phase-7-sdk-node
     content: "Phase 7 - Backend SDK (@pigeon/node): Implement Pigeon client class with send(), sendBatch(), createUserToken(). Zero runtime deps (native fetch). Full TypeScript types. Error handling with typed errors. Build with tsup (CJS + ESM)."
-    status: pending
+    status: completed
   - id: phase-8-sdk-react
     content: "Phase 8 - Frontend SDK (@pigeon/react): Implement PigeonProvider (context, token management, SSE connection). Implement useNotifications hook (list, unreadCount, markRead, markAllRead, archive, fetchMore, connectionStatus). SSE auto-reconnect with exponential backoff. Optimistic updates. Build with tsup."
     status: pending
