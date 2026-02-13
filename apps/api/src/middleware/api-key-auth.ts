@@ -1,4 +1,4 @@
-import { apiKeys, environments } from '@pigeon/db'
+import { apiKeys, environments } from '@flypigeon/db'
 import { and, eq, inArray } from 'drizzle-orm'
 import { createMiddleware } from 'hono/factory'
 

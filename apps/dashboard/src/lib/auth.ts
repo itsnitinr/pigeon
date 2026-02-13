@@ -1,4 +1,4 @@
-import { accounts, sessions, users, verifications } from '@pigeon/db'
+import { accounts, sessions, users, verifications } from '@flypigeon/db'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 

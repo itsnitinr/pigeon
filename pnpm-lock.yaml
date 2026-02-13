@@ -26,10 +26,10 @@ importers:
       '@hono/zod-validator':
         specifier: ^0.4.1
         version: 0.4.3(hono@4.11.9)(zod@3.25.76)
-      '@pigeon/db':
+      '@flypigeon/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@pigeon/shared':
+      '@flypigeon/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       bullmq:
@@ -66,10 +66,10 @@ importers:
 
   apps/dashboard:
     dependencies:
-      '@pigeon/db':
+      '@flypigeon/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@pigeon/shared':
+      '@flypigeon/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       better-auth:
@@ -126,7 +126,7 @@ importers:
 
   apps/demo/client:
     dependencies:
-      '@pigeon/react':
+      '@flypigeon/react':
         specifier: workspace:*
         version: link:../../../packages/sdk-react
       react:
@@ -151,7 +151,7 @@ importers:
 
   apps/demo/server:
     dependencies:
-      '@pigeon/node':
+      '@flypigeon/node':
         specifier: workspace:*
         version: link:../../../packages/sdk-node
       express:
@@ -179,10 +179,10 @@ importers:
 
   apps/worker:
     dependencies:
-      '@pigeon/db':
+      '@flypigeon/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@pigeon/shared':
+      '@flypigeon/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       bullmq:
@@ -213,7 +213,7 @@ importers:
 
   packages/db:
     dependencies:
-      '@pigeon/shared':
+      '@flypigeon/shared':
         specifier: workspace:*
         version: link:../shared
       dotenv:
@@ -256,7 +256,7 @@ importers:
 
   packages/sdk-react:
     dependencies:
-      '@pigeon/shared':
+      '@flypigeon/shared':
         specifier: workspace:*
         version: link:../shared
       '@radix-ui/react-popover':

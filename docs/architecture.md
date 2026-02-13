@@ -39,8 +39,8 @@ Pigeon is a multi-tenant notifications platform.
 - Sliding-window counters for rate limits.
 
 5. Shared packages
-- `@pigeon/shared`: shared types, constants, and Zod schemas.
-- `@pigeon/db`: Drizzle schema + DB client + migrations.
+- `@flypigeon/shared`: shared types, constants, and Zod schemas.
+- `@flypigeon/db`: Drizzle schema + DB client + migrations.
 
 ## Architecture diagrams
 
@@ -273,8 +273,8 @@ docker compose -f docker-compose.dev.yml up -d
 
 2. Run services:
 ```bash
-pnpm --filter @pigeon/api dev
-pnpm --filter @pigeon/worker dev
+pnpm --filter @flypigeon/api dev
+pnpm --filter @flypigeon/worker dev
 ```
 
 3. Smoke tests:
@@ -290,7 +290,7 @@ Done through Phase 6:
 - Foundation, shared/db, API auth, API endpoints, SSE/rate limit, worker.
 
 Not done yet:
-- SDKs (`@pigeon/node`, `@pigeon/react`) implementation details.
+- SDKs (`@flypigeon/node`, `@flypigeon/react`) implementation details.
 - Dashboard auth/features.
 - Demo app integration.
 - Docker production stack and final polish.

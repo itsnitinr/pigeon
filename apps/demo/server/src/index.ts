@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { Pool } from 'pg'
 
-import { Pigeon, PigeonApiError } from '@pigeon/node'
+import { Pigeon, PigeonApiError } from '@flypigeon/node'
 
 interface DemoEnvironment {
   apiKey: string

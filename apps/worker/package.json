@@ -1,5 +1,5 @@
 {
-  "name": "@pigeon/worker",
+  "name": "@flypigeon/worker",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,8 +11,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@pigeon/db": "workspace:*",
-    "@pigeon/shared": "workspace:*",
+    "@flypigeon/db": "workspace:*",
+    "@flypigeon/shared": "workspace:*",
     "bullmq": "^5.40.3",
     "drizzle-orm": "^0.36.4",
     "ioredis": "^5.4.2",

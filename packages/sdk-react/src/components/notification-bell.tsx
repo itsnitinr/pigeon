@@ -1,6 +1,6 @@
 'use client'
 
-import type { NotificationRecord } from '@pigeon/shared'
+import type { NotificationRecord } from '@flypigeon/shared'
 import * as Popover from '@radix-ui/react-popover'
 import type { CSSProperties } from 'react'
 import { useMemo, useState } from 'react'

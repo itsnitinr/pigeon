@@ -1,11 +1,24 @@
 {
-  "name": "@pigeon/react",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@flypigeon/react",
+  "version": "0.1.0",
+  "private": false,
+  "description": "React SDK for realtime Pigeon notifications with SSE and hooks.",
+  "keywords": ["pigeon", "notifications", "react", "sdk", "sse"],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -17,11 +30,12 @@
     "dev": "tsup src/index.ts --watch --dts --format esm,cjs",
     "build": "tsup src/index.ts --dts --format esm,cjs",
     "lint": "biome check src",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "pnpm run build && pnpm run typecheck"
   },
   "dependencies": {
     "@radix-ui/react-popover": "^1.1.4",
-    "@pigeon/shared": "workspace:*"
+    "@flypigeon/shared": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=18",

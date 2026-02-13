@@ -1,8 +1,8 @@
-import { endUsers, notifications, templates, webhookEndpoints } from '@pigeon/db'
+import { endUsers, notifications, templates, webhookEndpoints } from '@flypigeon/db'
 import type { Job } from 'bullmq'
 import { and, eq } from 'drizzle-orm'
 
-import type { NotificationRecord } from '@pigeon/shared'
+import type { NotificationRecord } from '@flypigeon/shared'
 import { db } from '../lib/db'
 import { webhookDeliveryQueue } from '../lib/jobs'
 import type { NotificationDeliveryJobData } from '../lib/jobs'

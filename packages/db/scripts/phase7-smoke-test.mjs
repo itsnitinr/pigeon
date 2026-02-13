@@ -101,8 +101,8 @@ async function main() {
   const baseUrl = process.env.API_BASE_URL ?? `http://localhost:${apiPort}`
 
   console.log(`Using API base URL: ${baseUrl}`)
-  console.log('0) Building @pigeon/node SDK...')
-  execFileSync('pnpm', ['--filter', '@pigeon/node', 'build'], {
+  console.log('0) Building @flypigeon/node SDK...')
+  execFileSync('pnpm', ['--filter', '@flypigeon/node', 'build'], {
     cwd: process.cwd(),
     stdio: 'inherit'
   })

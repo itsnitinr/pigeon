@@ -6,6 +6,6 @@ export default defineConfig({
   format: ['esm'],
   outDir: 'dist',
   skipNodeModulesBundle: false,
-  noExternal: ['@pigeon/db', '@pigeon/shared'],
+  noExternal: ['@flypigeon/db', '@flypigeon/shared'],
   external: ['pg', 'drizzle-orm', 'bullmq', 'ioredis', 'dotenv'],
 })

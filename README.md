@@ -4,7 +4,7 @@ Multi-tenant notifications infrastructure with:
 - `apps/api`: Hono API (REST + SSE)
 - `apps/worker`: BullMQ worker (delivery, webhook retries, cleanup)
 - `apps/dashboard`: Next.js admin dashboard
-- `apps/demo`: demo server/client using `@pigeon/node` and `@pigeon/react`
+- `apps/demo`: demo server/client using `@flypigeon/node` and `@flypigeon/react`
 
 ## Stack
 
@@ -34,7 +34,7 @@ docker compose -f docker-compose.dev.yml up -d
 
 4. Run migrations:
 ```bash
-pnpm --filter @pigeon/db db:migrate
+pnpm --filter @flypigeon/db db:migrate
 ```
 
 5. Start all apps:

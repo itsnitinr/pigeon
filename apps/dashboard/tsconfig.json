@@ -14,16 +14,16 @@
       "@/*": [
         "src/*"
       ],
-      "@pigeon/shared": [
+      "@flypigeon/shared": [
         "../../packages/shared/src/index.ts"
       ],
-      "@pigeon/db": [
+      "@flypigeon/db": [
         "../../packages/db/src/index.ts"
       ],
-      "@pigeon/node": [
+      "@flypigeon/node": [
         "../../packages/sdk-node/src/index.ts"
       ],
-      "@pigeon/react": [
+      "@flypigeon/react": [
         "../../packages/sdk-react/src/index.ts"
       ]
     },

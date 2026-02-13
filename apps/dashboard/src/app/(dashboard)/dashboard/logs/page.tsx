@@ -7,7 +7,7 @@ import { Select } from '@/components/ui/select'
 import { getDashboardContextForUser, getNotificationLogsForEnvironment } from '@/lib/dashboard-data'
 import { DASHBOARD_ROUTES } from '@/lib/dashboard-navigation'
 import { getAuthSession } from '@/lib/session'
-import { NOTIFICATION_STATUSES } from '@pigeon/shared'
+import { NOTIFICATION_STATUSES } from '@flypigeon/shared'
 import { redirect } from 'next/navigation'
 
 export default async function LogsPage({

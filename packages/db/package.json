@@ -1,5 +1,5 @@
 {
-  "name": "@pigeon/db",
+  "name": "@flypigeon/db",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -19,7 +19,7 @@
     "db:migrate": "tsx src/migrate.ts"
   },
   "dependencies": {
-    "@pigeon/shared": "workspace:*",
+    "@flypigeon/shared": "workspace:*",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.36.4",
     "pg": "^8.13.1"

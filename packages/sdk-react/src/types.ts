@@ -4,7 +4,7 @@ import type {
   MarkReadResponse,
   NotificationRecord,
   StreamEvent,
-} from '@pigeon/shared'
+} from '@flypigeon/shared'
 import type { ReactNode } from 'react'
 
 export type PigeonConnectionStatus = 'connecting' | 'connected' | 'disconnected'

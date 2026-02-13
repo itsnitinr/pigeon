@@ -1,6 +1,6 @@
 'use client'
 
-import { type StreamEvent, streamEventSchema } from '@pigeon/shared'
+import { type StreamEvent, streamEventSchema } from '@flypigeon/shared'
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { PigeonReactApiError } from './errors'

@@ -1,8 +1,8 @@
-import { environments } from '@pigeon/db'
+import { environments } from '@flypigeon/db'
 import { eq } from 'drizzle-orm'
 import { createMiddleware } from 'hono/factory'
 
-import { jwtPayloadSchema } from '@pigeon/shared'
+import { jwtPayloadSchema } from '@flypigeon/shared'
 import { extractBearerToken } from '../lib/auth'
 import { db } from '../lib/db'
 import { ApiError } from '../lib/errors'

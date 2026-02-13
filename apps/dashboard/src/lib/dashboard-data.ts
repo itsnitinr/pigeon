@@ -10,13 +10,13 @@ import {
   users,
   webhookDeliveryAttempts,
   webhookEndpoints,
-} from '@pigeon/db'
+} from '@flypigeon/db'
 import type {
   EnvironmentName,
   NotificationStatus,
   ProjectMemberRole,
   WebhookDeliveryStatus,
-} from '@pigeon/shared'
+} from '@flypigeon/shared'
 import { and, asc, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm'
 
 import { db } from './db'

@@ -40,7 +40,7 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-pigeon}
-    command: ['pnpm', '--filter', '@pigeon/db', 'db:migrate']
+    command: ['pnpm', '--filter', '@flypigeon/db', 'db:migrate']
     depends_on:
       postgres:
         condition: service_healthy

@@ -1,4 +1,4 @@
-import { createDbClient } from '@pigeon/db'
+import { createDbClient } from '@flypigeon/db'
 
 import { env } from './env'
 

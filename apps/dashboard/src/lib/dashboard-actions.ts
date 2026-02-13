@@ -11,8 +11,12 @@ import {
   projects,
   templates,
   webhookEndpoints,
-} from '@pigeon/db'
-import { API_KEY_PREFIX_BY_ENVIRONMENT, PROJECT_MEMBER_ROLES, WEBHOOK_EVENTS } from '@pigeon/shared'
+} from '@flypigeon/db'
+import {
+  API_KEY_PREFIX_BY_ENVIRONMENT,
+  PROJECT_MEMBER_ROLES,
+  WEBHOOK_EVENTS,
+} from '@flypigeon/shared'
 import { and, eq, like } from 'drizzle-orm'
 import { redirect } from 'next/navigation'
 

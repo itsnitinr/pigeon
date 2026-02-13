@@ -19,7 +19,7 @@ import {
   PROJECT_MEMBER_ROLES,
   WEBHOOK_DELIVERY_STATUSES,
   WEBHOOK_EVENTS,
-} from '@pigeon/shared'
+} from '@flypigeon/shared'
 
 export const environmentNameEnum = pgEnum('environment_name', ENVIRONMENT_NAMES)
 export const projectMemberRoleEnum = pgEnum('project_member_role', PROJECT_MEMBER_ROLES)

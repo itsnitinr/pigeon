@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     externalDir: true
   },
-  transpilePackages: ['@pigeon/db', '@pigeon/shared']
+  transpilePackages: ['@flypigeon/db', '@flypigeon/shared']
 }
 
 export default nextConfig

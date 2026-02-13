@@ -1,5 +1,5 @@
 {
-  "name": "@pigeon/api",
+  "name": "@flypigeon/api",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,8 +13,8 @@
   "dependencies": {
     "@hono/node-server": "^1.13.8",
     "@hono/zod-validator": "^0.4.1",
-    "@pigeon/db": "workspace:*",
-    "@pigeon/shared": "workspace:*",
+    "@flypigeon/db": "workspace:*",
+    "@flypigeon/shared": "workspace:*",
     "bullmq": "^5.40.3",
     "drizzle-orm": "^0.36.4",
     "hono": "^4.6.12",

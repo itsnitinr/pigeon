@@ -1,5 +1,5 @@
 {
-  "name": "@pigeon/dashboard",
+  "name": "@flypigeon/dashboard",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -11,8 +11,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@pigeon/db": "workspace:*",
-    "@pigeon/shared": "workspace:*",
+    "@flypigeon/db": "workspace:*",
+    "@flypigeon/shared": "workspace:*",
     "better-auth": "^1.3.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

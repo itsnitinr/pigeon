@@ -19,10 +19,10 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@pigeon/shared": ["packages/shared/src/index.ts"],
-      "@pigeon/db": ["packages/db/src/index.ts"],
-      "@pigeon/node": ["packages/sdk-node/src/index.ts"],
-      "@pigeon/react": ["packages/sdk-react/src/index.ts"]
+      "@flypigeon/shared": ["packages/shared/src/index.ts"],
+      "@flypigeon/db": ["packages/db/src/index.ts"],
+      "@flypigeon/node": ["packages/sdk-node/src/index.ts"],
+      "@flypigeon/react": ["packages/sdk-react/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "dist", ".turbo", ".next"]

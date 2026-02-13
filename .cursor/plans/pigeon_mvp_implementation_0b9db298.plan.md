@@ -6,7 +6,7 @@ todos:
     content: "Phase 1 - Foundation: Initialize pnpm monorepo with Turborepo, configure tsconfig.base.json, biome.json, docker-compose.dev.yml (PostgreSQL 16 + Redis 7 for local dev), pnpm-workspace.yaml, .env.example. Create all package/app scaffolds with package.json files."
     status: completed
   - id: phase-2-shared-db
-    content: "Phase 2 - Shared Packages: Build @pigeon/shared (Zod schemas, TypeScript types, constants) and @pigeon/db (Drizzle schema for all tables including project_members and project_invites, migration setup, DB client factory). Run initial migration."
+    content: "Phase 2 - Shared Packages: Build @flypigeon/shared (Zod schemas, TypeScript types, constants) and @flypigeon/db (Drizzle schema for all tables including project_members and project_invites, migration setup, DB client factory). Run initial migration."
     status: completed
   - id: phase-3-api-auth
     content: "Phase 3 - API Server (Auth): Scaffold Hono app, implement API key auth middleware (lookup by prefix, verify hash, extract env context), JWT auth middleware (verify, extract user context), error handling middleware, health check endpoint."
@@ -21,10 +21,10 @@ todos:
     content: "Phase 6 - Worker: Scaffold BullMQ worker process. Implement notification delivery processor (update status to delivered, publish to Redis pub/sub for SSE). Implement webhook delivery processor (HMAC-SHA256 signing, HTTP delivery, retry with exponential backoff, log attempts). Implement template rendering ({{variable}} interpolation). Add recurring cleanup job to hard-delete notifications older than 90 days (BullMQ repeatable job, daily)."
     status: completed
   - id: phase-7-sdk-node
-    content: "Phase 7 - Backend SDK (@pigeon/node): Implement Pigeon client class with send(), sendBatch(), createUserToken(). Zero runtime deps (native fetch). Full TypeScript types. Error handling with typed errors. Build with tsup (CJS + ESM)."
+    content: "Phase 7 - Backend SDK (@flypigeon/node): Implement Pigeon client class with send(), sendBatch(), createUserToken(). Zero runtime deps (native fetch). Full TypeScript types. Error handling with typed errors. Build with tsup (CJS + ESM)."
     status: completed
   - id: phase-8-sdk-react
-    content: "Phase 8 - Frontend SDK (@pigeon/react): Implement PigeonProvider (context, token management, SSE connection). Implement useNotifications hook (list, unreadCount, markRead, markAllRead, archive, fetchMore, connectionStatus). SSE auto-reconnect with exponential backoff. Optimistic updates. Build with tsup."
+    content: "Phase 8 - Frontend SDK (@flypigeon/react): Implement PigeonProvider (context, token management, SSE connection). Implement useNotifications hook (list, unreadCount, markRead, markAllRead, archive, fetchMore, connectionStatus). SSE auto-reconnect with exponential backoff. Optimistic updates. Build with tsup."
     status: completed
   - id: phase-9-dashboard-auth
     content: "Phase 9 - Dashboard (Auth + Layout): Scaffold Next.js 15 app with App Router. Set up Better Auth (email/password, sessions). Create login/register pages. Build dashboard layout (sidebar nav, project switcher, environment selector). Set up shadcn/ui + Tailwind v4."
@@ -33,7 +33,7 @@ todos:
     content: "Phase 10 - Dashboard (Features): Implement project CRUD, team member management (invite by email, role-based: owner/member), API key management (create/revoke/show-once), notification logs (searchable table with filters), user inspector page, template CRUD, webhook endpoint CRUD + delivery attempt viewer."
     status: completed
   - id: phase-11-demo
-    content: "Phase 11 - Demo App: Build Express server using @pigeon/node to send notifications. Build React frontend using @pigeon/react to display notifications + unread count + realtime updates. Verify all acceptance criteria from PRD."
+    content: "Phase 11 - Demo App: Build Express server using @flypigeon/node to send notifications. Build React frontend using @flypigeon/react to display notifications + unread count + realtime updates. Verify all acceptance criteria from PRD."
     status: completed
   - id: phase-12-docker
     content: "Phase 12 - Docker & Self-Hosting: Create multi-stage Dockerfiles for API, Worker, and Dashboard. Create docker-compose.yml for full-stack deployment (all services + PostgreSQL + Redis). Test full stack via docker compose up."
@@ -67,8 +67,8 @@ graph LR
         WebhookURL["Webhook URLs"]
     end
 
-    TenantServer -->|"@pigeon/node SDK"| API
-    TenantFrontend -->|"@pigeon/react SDK + SSE"| API
+    TenantServer -->|"@flypigeon/node SDK"| API
+    TenantFrontend -->|"@flypigeon/react SDK + SSE"| API
     DashboardUI -->|"Direct DB via shared pkg"| PG
 
     API -->|"read/write"| PG
@@ -132,7 +132,7 @@ sequenceDiagram
 **Worker (`apps/worker`):**
 
 - BullMQ worker (separate Node.js process)
-- Shared Drizzle DB client from `@pigeon/db`
+- Shared Drizzle DB client from `@flypigeon/db`
 - Webhook delivery with exponential backoff + HMAC-SHA256 signing
 
 **Dashboard (`apps/dashboard`):**
@@ -141,7 +141,7 @@ sequenceDiagram
 - **Better Auth** (email/password, session management)
 - **shadcn/ui** + **Tailwind CSS v4**
 - **TanStack Query** for client-side data fetching
-- Direct DB access via shared `@pigeon/db` package (no API intermediary)
+- Direct DB access via shared `@flypigeon/db` package (no API intermediary)
 
 **Backend SDK (`packages/sdk-node`):**
 
@@ -186,30 +186,30 @@ pigeon/
 │   │   ├── package.json
 │   │   └── next.config.ts
 │   └── demo/                # Demo app for acceptance criteria
-│       ├── server/          # Express server using @pigeon/node
-│       └── client/          # React app using @pigeon/react
+│       ├── server/          # Express server using @flypigeon/node
+│       └── client/          # React app using @flypigeon/react
 ├── packages/
-│   ├── db/                  # @pigeon/db - Drizzle schema + migrations
+│   ├── db/                  # @flypigeon/db - Drizzle schema + migrations
 │   │   ├── src/
 │   │   │   ├── schema/      # Table definitions
 │   │   │   ├── migrate.ts
 │   │   │   └── index.ts     # Client + schema exports
 │   │   ├── drizzle/         # Migration files
 │   │   └── drizzle.config.ts
-│   ├── sdk-node/            # @pigeon/node - Backend SDK
+│   ├── sdk-node/            # @flypigeon/node - Backend SDK
 │   │   ├── src/
 │   │   │   ├── client.ts
 │   │   │   ├── types.ts
 │   │   │   └── index.ts
 │   │   └── tsup.config.ts
-│   ├── sdk-react/           # @pigeon/react - Frontend SDK
+│   ├── sdk-react/           # @flypigeon/react - Frontend SDK
 │   │   ├── src/
 │   │   │   ├── provider.tsx
 │   │   │   ├── hooks/
 │   │   │   ├── sse.ts
 │   │   │   └── index.ts
 │   │   └── tsup.config.ts
-│   └── shared/              # @pigeon/shared - Types, Zod schemas, constants
+│   └── shared/              # @flypigeon/shared - Types, Zod schemas, constants
 │       ├── src/
 │       │   ├── types.ts
 │       │   ├── schemas.ts   # Zod validation schemas
@@ -318,7 +318,7 @@ pigeon/
 
 **Internal / Dashboard (session-authenticated via Better Auth):**
 
-- Dashboard accesses the DB directly via the shared `@pigeon/db` package (Next.js Server Actions / Route Handlers). No separate admin API needed for MVP.
+- Dashboard accesses the DB directly via the shared `@flypigeon/db` package (Next.js Server Actions / Route Handlers). No separate admin API needed for MVP.
 
 ### Pagination (improvement over PRD)
 
@@ -339,10 +339,10 @@ Response: { items: [...], nextCursor: "xxx" | null }
 
 ## SDK Design
 
-### Backend SDK (`@pigeon/node`)
+### Backend SDK (`@flypigeon/node`)
 
 ```typescript
-import { Pigeon } from '@pigeon/node';
+import { Pigeon } from '@flypigeon/node';
 
 const pigeon = new Pigeon({
   apiKey: 'pk_live_xxx',
@@ -372,12 +372,12 @@ const { token, expiresAt } = await pigeon.createUserToken({
 });
 ```
 
-### Frontend SDK (`@pigeon/react`)
+### Frontend SDK (`@flypigeon/react`)
 
 **Improvement over PRD:** Use a `tokenProvider` callback instead of a static `token` prop. This allows the SDK to automatically refresh tokens when they expire.
 
 ```tsx
-import { PigeonProvider, useNotifications } from '@pigeon/react';
+import { PigeonProvider, useNotifications } from '@flypigeon/react';
 
 // In app root - tokenProvider fetches fresh tokens
 <PigeonProvider

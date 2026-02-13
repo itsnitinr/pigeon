@@ -1,5 +1,5 @@
 {
-  "name": "@pigeon/demo-server",
+  "name": "@flypigeon/demo-server",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@pigeon/node": "workspace:*",
+    "@flypigeon/node": "workspace:*",
     "express": "^4.21.2",
     "pg": "^8.13.1"
   },

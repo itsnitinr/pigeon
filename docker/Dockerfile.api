@@ -17,9 +17,9 @@ RUN pnpm install --frozen-lockfile
 
 FROM deps AS builder
 COPY . .
-RUN pnpm --filter @pigeon/shared build \
-  && pnpm --filter @pigeon/db build \
-  && pnpm --filter @pigeon/api build
+RUN pnpm --filter @flypigeon/shared build \
+  && pnpm --filter @flypigeon/db build \
+  && pnpm --filter @flypigeon/api build
 
 FROM base AS runner
 ENV NODE_ENV=production

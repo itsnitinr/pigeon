@@ -1,7 +1,7 @@
 import { StrictMode, useCallback, useEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import { NotificationBell, PigeonProvider, type TokenProvider } from '@pigeon/react'
+import { NotificationBell, PigeonProvider, type TokenProvider } from '@flypigeon/react'
 
 const demoServerUrl = import.meta.env.VITE_DEMO_SERVER_URL ?? 'http://localhost:3010'
 
@@ -150,7 +150,7 @@ function App() {
         <section className="demo-shell">
           <h1>Demo server unavailable</h1>
           <p>{loadError}</p>
-          <p>Make sure `@pigeon/demo-server` is running on {demoServerUrl}.</p>
+          <p>Make sure `@flypigeon/demo-server` is running on {demoServerUrl}.</p>
         </section>
       </main>
     )

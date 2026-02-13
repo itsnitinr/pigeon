@@ -1,4 +1,4 @@
-import type { StreamEvent } from '@pigeon/shared'
+import type { StreamEvent } from '@flypigeon/shared'
 
 import { redisClient } from './redis'
 

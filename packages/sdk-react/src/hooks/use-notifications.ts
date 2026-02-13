@@ -6,7 +6,7 @@ import type {
   MarkReadResponse,
   NotificationRecord,
   NotificationsListResponse,
-} from '@pigeon/shared'
+} from '@flypigeon/shared'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { usePigeonContext } from '../provider'

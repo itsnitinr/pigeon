@@ -1,5 +1,5 @@
 {
-  "name": "@pigeon/node",
+  "name": "@flypigeon/node",
   "version": "0.1.0",
   "private": false,
   "description": "Node.js SDK for sending and managing Pigeon notifications.",

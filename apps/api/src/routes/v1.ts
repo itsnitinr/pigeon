@@ -1,11 +1,11 @@
-import { endUsers, environments, notifications } from '@pigeon/db'
+import { endUsers, environments, notifications } from '@flypigeon/db'
 import {
   createUserTokenResponseSchema,
   notificationPathParamSchema,
   notificationsListQuerySchema,
   sendNotificationInputSchema,
   userPathParamSchema,
-} from '@pigeon/shared'
+} from '@flypigeon/shared'
 import { and, desc, eq, isNull, lt, or } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
@@ -19,7 +19,7 @@ import type {
   MarkReadResponse,
   NotificationsListResponse,
   StreamEvent,
-} from '@pigeon/shared'
+} from '@flypigeon/shared'
 import { db } from '../lib/db'
 import { env } from '../lib/env'
 import { ApiError } from '../lib/errors'
