@@ -1,0 +1,25 @@
+{
+  "name": "@pigeon/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup src/index.ts --dts --format esm --out-dir dist",
+    "start": "node dist/index.js",
+    "lint": "biome check src",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@pigeon/db": "workspace:*",
+    "@pigeon/shared": "workspace:*",
+    "bullmq": "^5.40.3",
+    "ioredis": "^5.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

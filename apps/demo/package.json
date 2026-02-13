@@ -1,0 +1,11 @@
+{
+  "name": "@pigeon/demo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel --filter @pigeon/demo-server --filter @pigeon/demo-client dev",
+    "build": "pnpm --filter @pigeon/demo-server build && pnpm --filter @pigeon/demo-client build",
+    "lint": "pnpm --filter @pigeon/demo-server lint && pnpm --filter @pigeon/demo-client lint",
+    "typecheck": "pnpm --filter @pigeon/demo-server typecheck && pnpm --filter @pigeon/demo-client typecheck"
+  }
+}
