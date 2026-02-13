@@ -7,10 +7,10 @@ todos:
     status: completed
   - id: phase-2-shared-db
     content: 'Phase 2 - Shared Packages: Build @pigeon/shared (Zod schemas, TypeScript types, constants) and @pigeon/db (Drizzle schema for all tables including project_members and project_invites, migration setup, DB client factory). Run initial migration.'
-    status: pending
+    status: completed
   - id: phase-3-api-auth
     content: 'Phase 3 - API Server (Auth): Scaffold Hono app, implement API key auth middleware (lookup by prefix, verify hash, extract env context), JWT auth middleware (verify, extract user context), error handling middleware, health check endpoint.'
-    status: pending
+    status: completed
   - id: phase-4-api-endpoints
     content: 'Phase 4 - API Server (Endpoints): Implement POST /v1/notifications (validate, idempotency check, upsert end_user, write notification, enqueue job), POST /v1/users/:userId/token (mint JWT), GET /v1/notifications (cursor-paginated list), POST /v1/notifications/:id/read, POST /v1/notifications/read-all, POST /v1/notifications/:id/archive.'
     status: pending
