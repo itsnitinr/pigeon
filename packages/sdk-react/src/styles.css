@@ -1,0 +1,31 @@
+@tailwind utilities;
+
+@layer utilities {
+  .animate-in {
+    animation-duration: 150ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    animation-fill-mode: both;
+  }
+
+  .fade-in-0 {
+    --pigeon-enter-opacity: 0;
+    animation-name: pigeon-enter;
+  }
+
+  .zoom-in-95 {
+    --pigeon-enter-scale: 0.95;
+    transform-origin: top right;
+    animation-name: pigeon-enter;
+  }
+}
+
+@keyframes pigeon-enter {
+  from {
+    opacity: var(--pigeon-enter-opacity, 1);
+    transform: scale(var(--pigeon-enter-scale, 1));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

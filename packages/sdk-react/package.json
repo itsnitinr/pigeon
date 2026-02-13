@@ -1,10 +1,18 @@
 {
   "name": "@flypigeon/react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "React SDK for realtime Pigeon notifications with SSE and hooks.",
-  "keywords": ["pigeon", "notifications", "react", "sdk", "sse"],
-  "sideEffects": false,
+  "keywords": [
+    "pigeon",
+    "notifications",
+    "react",
+    "sdk",
+    "sse"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "engines": {
     "node": ">=18"
   },
@@ -12,6 +20,7 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "style": "./dist/styles.css",
   "files": [
     "dist",
     "README.md"
@@ -24,11 +33,14 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./styles.css": "./dist/styles.css"
   },
   "scripts": {
     "dev": "tsup src/index.ts --watch --dts --format esm,cjs",
-    "build": "tsup src/index.ts --dts --format esm,cjs",
+    "build": "pnpm run build:js && pnpm run build:css",
+    "build:js": "tsup src/index.ts --dts --format esm,cjs",
+    "build:css": "mkdir -p dist && tailwindcss -c ./tailwind.config.cjs -i ./src/styles.css -o ./dist/styles.css --minify",
     "lint": "biome check src",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "prepublishOnly": "pnpm run build && pnpm run typecheck"
@@ -43,6 +55,7 @@
   },
   "devDependencies": {
     "@types/react": "^19.0.2",
+    "tailwindcss": "^3.4.17",
     "tsup": "^8.3.5",
     "typescript": "^5.7.3"
   }

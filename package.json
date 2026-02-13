@@ -9,6 +9,9 @@
     "typecheck": "turbo typecheck",
     "format": "biome format --write .",
     "check": "biome check .",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish",
     "openapi:generate": "node scripts/generate-openapi.mjs",
     "test:phase4": "node packages/db/scripts/phase4-smoke-test.mjs",
     "test:phase5": "node packages/db/scripts/phase5-smoke-test.mjs",
@@ -17,6 +20,7 @@
     "test:phase11": "node packages/db/scripts/phase11-smoke-test.mjs"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.7",
     "@biomejs/biome": "^1.9.4",
     "turbo": "^2.3.3",
     "typescript": "^5.7.3"

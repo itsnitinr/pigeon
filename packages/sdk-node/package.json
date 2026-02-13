@@ -1,9 +1,15 @@
 {
   "name": "@flypigeon/node",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "Node.js SDK for sending and managing Pigeon notifications.",
-  "keywords": ["pigeon", "notifications", "sdk", "node", "typescript"],
+  "keywords": [
+    "pigeon",
+    "notifications",
+    "sdk",
+    "node",
+    "typescript"
+  ],
   "sideEffects": false,
   "engines": {
     "node": ">=18"

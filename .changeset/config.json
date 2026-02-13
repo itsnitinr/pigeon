@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.0.4/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [
+    ["@flypigeon/shared", "@flypigeon/node", "@flypigeon/react"]
+  ],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "@flypigeon/api",
+    "@flypigeon/dashboard",
+    "@flypigeon/demo",
+    "@flypigeon/demo-client",
+    "@flypigeon/demo-server",
+    "@flypigeon/worker",
+    "@flypigeon/db"
+  ]
+}

@@ -16,6 +16,7 @@ npm install @flypigeon/react @flypigeon/shared react react-dom
 ## Basic Usage
 
 ```tsx
+import '@flypigeon/react/styles.css'
 import { PigeonProvider, useNotifications } from '@flypigeon/react'
 
 function App() {
@@ -34,3 +35,5 @@ function Content() {
   return <div>{unreadCount} unread</div>
 }
 ```
+
+The `NotificationBell` styles are shipped in `@flypigeon/react/styles.css`, so import that once in your app entrypoint.

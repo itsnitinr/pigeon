@@ -1,9 +1,15 @@
 {
   "name": "@flypigeon/shared",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "Shared TypeScript types and Zod schemas for Pigeon packages.",
-  "keywords": ["pigeon", "notifications", "zod", "typescript", "shared"],
+  "keywords": [
+    "pigeon",
+    "notifications",
+    "zod",
+    "typescript",
+    "shared"
+  ],
   "sideEffects": false,
   "engines": {
     "node": ">=18"
