@@ -7,4 +7,5 @@ export default defineConfig({
   outDir: 'dist',
   skipNodeModulesBundle: false,
   noExternal: ['@pigeon/db', '@pigeon/shared'],
+  external: ['pg', 'drizzle-orm', 'bullmq', 'ioredis', 'dotenv'],
 })
