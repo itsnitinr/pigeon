@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsup src/index.ts --dts --format esm --out-dir dist",
+    "build": "tsup --config tsup.config.ts",
     "start": "node dist/index.js",
     "lint": "biome check src",
     "typecheck": "tsc -p tsconfig.json --noEmit"

@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 import { config as loadEnv } from 'dotenv'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 
-import { createDbClient } from './client.js'
+import { createDbClient } from './client'
 
 const currentDir = dirname(fileURLToPath(import.meta.url))
 const repoRoot = resolve(currentDir, '../../..')
